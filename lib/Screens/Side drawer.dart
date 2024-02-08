@@ -1,5 +1,3 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SideContainer extends StatelessWidget {
@@ -12,7 +10,7 @@ class SideContainer extends StatelessWidget {
       child: Container(
         width: 220.0,
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: Colors.black,
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Container(
@@ -31,7 +29,9 @@ class SideContainer extends StatelessWidget {
               Divider(thickness: 3),
               SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/loads');
+                },
                 child: Text(
                   'Loads',
                   style: TextStyle(
@@ -42,7 +42,9 @@ class SideContainer extends StatelessWidget {
               ),
               SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/buy_sell');
+                },
                 child: Text(
                   'Buy & Sell',
                   style: TextStyle(
@@ -53,7 +55,9 @@ class SideContainer extends StatelessWidget {
               ),
               SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/finance');
+                },
                 child: Text(
                   'Finance',
                   style: TextStyle(
@@ -64,7 +68,9 @@ class SideContainer extends StatelessWidget {
               ),
               SizedBox(height: 10.0),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/insurance');
+                },
                 child: Text(
                   'Insurance',
                   style: TextStyle(
@@ -75,16 +81,17 @@ class SideContainer extends StatelessWidget {
               ),
               SizedBox(height: 10,),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pushNamed(context, '/verification');
+                },
                 child: Text(
-                  'Insurance',
+                  'Verification',
                   style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w900,
                   ),
                 ),
               )
-
             ],
           ),
         ),

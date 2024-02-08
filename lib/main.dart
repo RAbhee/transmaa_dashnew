@@ -1,5 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:transmaa_dash/sidebuttons/buyNsell.dart';
+import 'package:transmaa_dash/sidebuttons/finance.dart';
+import 'package:transmaa_dash/sidebuttons/insurance.dart';
+import 'package:transmaa_dash/sidebuttons/loads.dart';
+import 'package:transmaa_dash/sidebuttons/verification.dart';
 import 'Screens/Side drawer.dart';
 import 'Screens/cancelled.dart';
 import 'Screens/delivered.dart';
@@ -17,6 +22,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      routes: {
+        '/loads': (context) => LoadsScreen(),
+        '/buy_sell': (context) => BuynSellScreen(),
+        '/finance': (context) => FinanceScreen(),
+        '/insurance': (context) => InsuranceScreen(),
+        '/verification': (context) => VerificationScreen(),
+      },
       debugShowCheckedModeBanner: false,
       title: 'Logistics Admin Dashboard',
       theme: ThemeData(
