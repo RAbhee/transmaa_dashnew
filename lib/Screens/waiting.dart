@@ -41,6 +41,10 @@ class WaitingordersScreen extends StatelessWidget {
               int selectedTruckPrice = selectedTruckData['price'] ?? 0;
               int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
 
+              // Fetching name and phone number
+              String name = order['name'] ?? ''; // Adjust field name if different in Firestore
+              String phoneNumber = order['phoneNumber'] ?? ''; // Adjust field name if different in Firestore
+
               return Container(
                 key: Key(orderData.id), // Use document id as key
                 margin: EdgeInsets.all(10),
@@ -53,6 +57,8 @@ class WaitingordersScreen extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Displaying fields
+                    Text('Name: $name'), // Display name
+                    Text('Phone Number: $phoneNumber'), // Display phone number
                     Text('Goods Type: $selectedGoodsType'),
                     Text('Date: ${selectedDate.toLocal()}'), // Displaying formatted date
                     Text('Time: $selectedTime'),
@@ -68,6 +74,8 @@ class WaitingordersScreen extends StatelessWidget {
                             // Handle accept button press
                             // Store data in a different collection
                             FirebaseFirestore.instance.collection('accepted_orders').add({
+                              'name': name, // Assuming 'name' is retrieved from Firestore
+                              'phoneNumber': phoneNumber,
                               'selectedGoodsType': selectedGoodsType,
                               'selectedDate': selectedDateTimestamp,
                               'selectedTime': selectedTime,
@@ -83,15 +91,23 @@ class WaitingordersScreen extends StatelessWidget {
                         SizedBox(width: 10),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CancelledOrdersScreen(),
-                              ),
-                            );
+                            // Store rejected data in Firestore
+                            FirebaseFirestore.instance.collection('rejected_orders').add({
+                              'name': name, // Assuming 'name' is retrieved from Firestore
+                              'phoneNumber': phoneNumber, // Assuming 'phoneNumber' is retrieved from Firestore
+                              'selectedGoodsType': selectedGoodsType,
+                              'selectedDate': selectedDateTimestamp,
+                              'selectedTime': selectedTime,
+                              'selectedTruck': selectedTruckData,
+                              // You can add more fields if necessary
+                            });
+
+                            // Delete the document from pickup_requests collection
+                            orderData.reference.delete();
                           },
                           child: Text('Reject'),
                         ),
+
                       ],
                     ),
                   ],
