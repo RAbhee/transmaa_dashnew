@@ -30,6 +30,8 @@ class WaitingordersScreen extends StatelessWidget {
               // Extracting fields
               String selectedGoodsType = order['selectedGoodsType'] ?? '';
               String selectedTime = order['selectedTime'] ?? '';
+              String fromLocation = order['fromLocation'] ?? '';
+              String toLocation = order['toLocation'] ?? '';
 
               // Handling selectedDate
               Timestamp selectedDateTimestamp = order['selectedDate'] ?? Timestamp.now();
@@ -62,6 +64,8 @@ class WaitingordersScreen extends StatelessWidget {
                     Text('Goods Type: $selectedGoodsType'),
                     Text('Date: ${selectedDate.toLocal()}'), // Displaying formatted date
                     Text('Time: $selectedTime'),
+                    Text('From: $fromLocation'),
+                    Text('To: $toLocation'),
                     // Displaying selectedTruck details
                     Text('Truck Name: $selectedTruckName'),
                     Text('Truck Price: $selectedTruckPrice'),

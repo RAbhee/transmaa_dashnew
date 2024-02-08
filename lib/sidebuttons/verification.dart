@@ -56,7 +56,7 @@ class VerificationScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.check),
+                          icon: Icon(Icons.check, size: 30),
                           onPressed: () {
                             // Implement functionality for correct button
                             // You can add logic to mark the driver as verified
@@ -64,7 +64,7 @@ class VerificationScreen extends StatelessWidget {
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.close),
+                          icon: Icon(Icons.close, size: 30),
                           onPressed: () {
                             // Implement functionality for incorrect button
                             // You can add logic to mark the driver as unverified
