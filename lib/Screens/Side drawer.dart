@@ -22,7 +22,7 @@ class SideContainer extends StatelessWidget {
                 style: TextStyle(
                   color: Colors.deepOrange,
                   fontWeight: FontWeight.bold,
-                  fontSize: 22.0,
+                  fontSize: 25.0,
                 ),
               ),
               SizedBox(height: 10),

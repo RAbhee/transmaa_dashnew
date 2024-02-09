@@ -56,45 +56,45 @@ class _AdminDashboardState extends State<AdminDashboard> {
         return CustomPopup();
       },
     );
-  } 
+  }
 
-@override
-Widget build(BuildContext context) {
-  return Scaffold(
-    body: Stack(
-      children: [
-        SideContainer(),
-        Positioned(
-          top: 0.0,
-          left: 80.0,
-          right: 0.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: _showPopup,
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  height: 120.0,
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          SideContainer(),
+          Positioned(
+            top: 0.0,
+            left: 80.0,
+            right: 0.0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                GestureDetector(
+                  onTap: _showPopup,
+                  child: Image.asset(
+                    'assets/images/logo.png',
+                    height: 120.0,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        Positioned(
-          top: 20.0,
-          right: 60.0,
-          child: Row(
-            children: [
-              Icon(
-                Icons.account_circle,
-                size: 30.0,
-              ),
-              SizedBox(width: 10,),
-              Text('Admin'),
-            ],
+          Positioned(
+            top: 20.0,
+            right: 60.0,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.account_circle,
+                  size: 30.0,
+                ),
+                SizedBox(width: 10,),
+                Text('Admin'),
+              ],
+            ),
           ),
-        ),
           Positioned(
             top: 130.0, // Adjust the top position based on your layout
             left: 250.0,
@@ -325,4 +325,3 @@ class CustomPopup extends StatelessWidget {
     );
   }
 }
-

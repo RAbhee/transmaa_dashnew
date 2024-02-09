@@ -9,7 +9,7 @@ class VerificationScreen extends StatelessWidget {
         title: Text('Verification'),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('drivers').snapshots(),
+        stream: FirebaseFirestore.instance.collection('Driver').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -26,59 +26,98 @@ class VerificationScreen extends StatelessWidget {
               var driverData = snapshot.data!.docs[index];
               Map<String, dynamic> driver = driverData.data() as Map<String, dynamic>;
 
-              // Create a Container to display driver information
-              return Container(
+              // Get the URL of the image from the Firestore document
+              String imageUrl = driver['image'];
+
+              // Create a Card to display driver information
+              return Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Driver ${index + 1}',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                child: Padding(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Driver ${index + 1}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: driver.entries.map((entry) {
-                        return Text('${entry.key}: ${entry.value}');
-                      }).toList(),
-                    ),
-                    SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.check, size: 30),
-                          onPressed: () {
-                            // Implement functionality for correct button
-                            // You can add logic to mark the driver as verified
-                            // For example: FirebaseFirestore.instance.collection('drivers').doc(driverData.id).update({'verified': true});
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.close, size: 30),
-                          onPressed: () {
-                            // Implement functionality for incorrect button
-                            // You can add logic to mark the driver as unverified
-                            // For example: FirebaseFirestore.instance.collection('drivers').doc(driverData.id).update({'verified': false});
-                          },
-                        ),
-                      ],
-                    ),
-                  ],
+                      SizedBox(height: 10),
+                      // Display the image as an icon
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => ImageScreen(imageUrl)),
+                          );
+                        },
+                        child: Icon(Icons.image, size: 100),
+                      ),
+                      SizedBox(height: 10),
+                      Divider(),
+                      SizedBox(height: 10),
+                      // Display driver information
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: driver.entries.map((entry) {
+                          return Text(
+                            '${entry.key}: ${entry.value}',
+                            style: TextStyle(fontSize: 16),
+                          );
+                        }).toList(),
+                      ),
+                      SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.check, size: 30),
+                            onPressed: () {
+                              // Implement functionality for correct button
+                              // You can add logic to mark the driver as verified
+                              // For example: FirebaseFirestore.instance.collection('drivers').doc(driverData.id).update({'verified': true});
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.close, size: 30),
+                            onPressed: () {
+                              // Implement functionality for incorrect button
+                              // You can add logic to mark the driver as unverified
+                              // For example: FirebaseFirestore.instance.collection('drivers').doc(driverData.id).update({'verified': false});
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
           );
         },
+      ),
+    );
+  }
+}
+
+class ImageScreen extends StatelessWidget {
+  final String imageUrl;
+
+  ImageScreen(this.imageUrl);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Image'),
+      ),
+      body: Center(
+        child: Image.network(
+          imageUrl,
+          fit: BoxFit.contain,
+        ),
       ),
     );
   }
