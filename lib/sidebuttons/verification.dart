@@ -101,7 +101,6 @@ class VerificationScreen extends StatelessWidget {
     );
   }
 }
-
 class ImageScreen extends StatelessWidget {
   final String imageUrl;
 
@@ -117,8 +116,12 @@ class ImageScreen extends StatelessWidget {
         child: Image.network(
           imageUrl,
           fit: BoxFit.contain,
+          errorBuilder: (context, error, stackTrace) {
+            return Text('');
+          },
         ),
       ),
     );
   }
 }
+

@@ -103,8 +103,21 @@ class _AdminDashboardState extends State<AdminDashboard> {
               height: 80,
               padding: EdgeInsets.symmetric(horizontal: 20.0),
               decoration: BoxDecoration(
-                color: Colors.grey.shade100, // Customize the background color
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20.0),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.fromRGBO(42, 31, 37, 0.9803921568627451), // Orange with 70% opacity
+                    Color.fromRGBO(2, 49, 96, 1.0), // Red with 50% opacity
+                    Color.fromRGBO(108, 57, 4, 1.0), // Red with 30% opacity
+                    Color.fromRGBO(6, 52, 98, 0.8), // Red with 20% opacity
+                    Color.fromRGBO(19, 17, 17, 1.0),
+                    // Orange with 70% opacity
+                    Color.fromRGBO(2, 49, 96, 1.0),
+                    Color.fromRGBO(42, 31, 37, 0.9803921568627451), // Red with 10% opacity
+                  ],
+                ),
               ),
 
               child: Row(
@@ -119,14 +132,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                         showCancelledOrders = false;
                         showWaitingorders = false;
                       });
-
                     },
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/images/completed.png',
-                          height: 50,
-                          width: 60,// Replace with your image path
+                        Icon(
+                          Icons.check_circle_outline,
+                          size: 50,
+                          color: Colors.white,
                         ),
                         SizedBox(height: 5,),
                         Text(
@@ -134,11 +146,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black87
+                              color: Colors.white
                           ),
                         )
                       ],
-
                     ),
                   ),
                   GestureDetector(
@@ -151,10 +162,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/images/waiti.png',
-                          height: 50,
-                          width: 60,// Replace with your image path
+                        Icon(
+                          Icons.access_time,
+                          size: 50,
+                          color: Colors.white,
                         ),
                         SizedBox(height: 5,),
                         Text(
@@ -162,11 +173,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black87
+                              color: Colors.white
                           ),
                         )
                       ],
-
                     ),
                   ),
                   GestureDetector(
@@ -175,10 +185,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/images/confirmed.png',
-                          height: 50,
-                          width: 60,// Replace with your image path
+                        Icon(
+                          Icons.assignment_turned_in_outlined,
+                          size: 50,
+                          color: Colors.white,
                         ),
                         SizedBox(height: 5,),
                         Text(
@@ -186,28 +196,26 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black87
+                              color: Colors.white
                           ),
                         )
                       ],
-
                     ),
                   ),
                   GestureDetector(
                     onTap: () {
                       setState(() {
                         showCancelledOrders = !showCancelledOrders;
-                        showDeliveredOrders = false; // Hide Delivered Orders screen
-                        showWaitingorders = false; // Hide Delivered Orders screen
+                        showDeliveredOrders = false;
+                        showWaitingorders = false;
                       });
-
                     },
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/images/cancell.png',
-                          height: 50,
-                          width: 60,// Replace with your image path
+                        Icon(
+                          Icons.cancel_outlined,
+                          size: 50,
+                          color: Colors.white,
                         ),
                         SizedBox(height: 5,),
                         Text(
@@ -215,7 +223,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black87
+                              color: Colors.white
                           ),
                         )
                       ],
@@ -227,10 +235,10 @@ class _AdminDashboardState extends State<AdminDashboard> {
                     },
                     child: Column(
                       children: [
-                        Image.asset(
-                          'assets/images/dwaiting.png',
-                          height: 50,
-                          width: 60,// Replace with your image path
+                        Icon(
+                          Icons.directions_car_outlined,
+                          size: 50,
+                          color: Colors.white,
                         ),
                         SizedBox(height: 5,),
                         Text(
@@ -238,14 +246,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           style: TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.w900,
-                              color: Colors.black87
+                              color: Colors.white
                           ),
                         )
                       ],
                     ),
                   ),
-
                 ],
+
+
               ),
             ),
           ),
