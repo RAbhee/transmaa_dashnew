@@ -11,23 +11,17 @@ class SideContainer extends StatelessWidget {
         width: 220.0,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color.fromRGBO(42, 31, 37, 0.9803921568627451), // Orange with 70% opacity
-              Color.fromRGBO(2, 49, 96, 1.0), // Red with 50% opacity
-              Color.fromRGBO(108, 57, 4, 1.0), // Red with 30% opacity
-              Color.fromRGBO(6, 52, 98, 0.8), // Red with 20% opacity
-              Color.fromRGBO(19, 17, 17, 1.0),
-              // Orange with 70% opacity
-              Color.fromRGBO(2, 49, 96, 1.0),
-              Color.fromRGBO(42, 31, 37, 0.9803921568627451), // Red with 10% opacity
-            ],
-          ),
+          color: Colors.orange.shade100,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 10.0,
+              offset: Offset(0, 4),
+            ),
+          ],
         ),
-        child: Container(
-          padding: const EdgeInsets.all(35),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -46,9 +40,13 @@ class SideContainer extends StatelessWidget {
               ),
               SizedBox(height: 20),
               buildMenuItem(context, 'Loads', Icons.local_shipping, '/loads'),
+              SizedBox(height: 10),
               buildMenuItem(context, 'Buy & Sell', Icons.shopping_bag, '/buy_sell'),
+              SizedBox(height: 10),
               buildMenuItem(context, 'Finance', Icons.attach_money, '/finance'),
+              SizedBox(height: 10),
               buildMenuItem(context, 'Insurance', Icons.security, '/insurance'),
+              SizedBox(height: 10),
               buildMenuItem(context, 'Verification', Icons.verified_user, '/verification'),
             ],
           ),
@@ -68,7 +66,7 @@ class SideContainer extends StatelessWidget {
           children: [
             Icon(
               icon,
-              color: Colors.white,
+              color: Colors.black,
               size: 24,
             ),
             SizedBox(width: 10),
@@ -76,8 +74,8 @@ class SideContainer extends StatelessWidget {
               title,
               style: TextStyle(
                 fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
+                color: Colors.black,
+                fontWeight: FontWeight.w500, // Adjusted font weight
               ),
             ),
           ],

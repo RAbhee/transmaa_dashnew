@@ -8,6 +8,7 @@ import 'package:transmaa_dash/sidebuttons/verification.dart';
 import 'Screens/Side drawer.dart';
 import 'Screens/cancelled.dart';
 import 'Screens/delivered.dart';
+import 'Screens/driver_waiting.dart';
 import 'Screens/waiting.dart';
 import 'firebase_options.dart';
 
@@ -48,6 +49,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
   bool showDeliveredOrders = false;
   bool showCancelledOrders = false;
   bool showWaitingorders = false;
+  bool showDriverwaiting = false;
 
   void _showPopup() {
     showDialog(
@@ -99,163 +101,71 @@ class _AdminDashboardState extends State<AdminDashboard> {
             top: 130.0, // Adjust the top position based on your layout
             left: 250.0,
             right: 200.0,
-            child: Container(
-              height: 80,
-              padding: EdgeInsets.symmetric(horizontal: 20.0),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20.0),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color.fromRGBO(42, 31, 37, 0.9803921568627451), // Orange with 70% opacity
-                    Color.fromRGBO(2, 49, 96, 1.0), // Red with 50% opacity
-                    Color.fromRGBO(108, 57, 4, 1.0), // Red with 30% opacity
-                    Color.fromRGBO(6, 52, 98, 0.8), // Red with 20% opacity
-                    Color.fromRGBO(19, 17, 17, 1.0),
-                    // Orange with 70% opacity
-                    Color.fromRGBO(2, 49, 96, 1.0),
-                    Color.fromRGBO(42, 31, 37, 0.9803921568627451), // Red with 10% opacity
-                  ],
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildButton(
+                  Icons.check_circle_outline,
+                  Colors.green.shade900,
+                  "Delivered orders",
+                      () {
+                    setState(() {
+                      showDeliveredOrders = !showDeliveredOrders;
+                      showCancelledOrders = false;
+                      showWaitingorders = false;
+                      showDriverwaiting = false;
+                    });
+                  },
                 ),
-              ),
-
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showDeliveredOrders = !showDeliveredOrders;
-                        showCancelledOrders = false;
-                        showWaitingorders = false;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.check_circle_outline,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 5,),
-                        Text(
-                          "Delivered orders",
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showWaitingorders = !showWaitingorders;
-                        showDeliveredOrders = false;
-                        showCancelledOrders = false;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.access_time,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 5,),
-                        Text(
-                          "Order's Waiting",
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Add your notification button functionality here
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.assignment_turned_in_outlined,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 5,),
-                        Text(
-                          "Confirmed orders",
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        showCancelledOrders = !showCancelledOrders;
-                        showDeliveredOrders = false;
-                        showWaitingorders = false;
-                      });
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.cancel_outlined,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 5,),
-                        Text(
-                          "Cancelled orders",
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Add your notification button functionality here
-                    },
-                    child: Column(
-                      children: [
-                        Icon(
-                          Icons.directions_car_outlined,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                        SizedBox(height: 5,),
-                        Text(
-                          "Driver Confirmation",
-                          style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w900,
-                              color: Colors.white
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-
-
-              ),
+                _buildButton(
+                  Icons.access_time,
+                  Colors.blue.shade900,
+                  "Order's Waiting",
+                      () {
+                    setState(() {
+                      showWaitingorders = !showWaitingorders;
+                      showDeliveredOrders = false;
+                      showCancelledOrders = false;
+                      showDriverwaiting = false;
+                    });
+                  },
+                ),
+                _buildButton(
+                  Icons.assignment_turned_in_outlined,
+                  Colors.purple.shade900,
+                  "Confirmed orders",
+                      () {
+                    // Add your notification button functionality here
+                  },
+                ),
+                _buildButton(
+                  Icons.cancel_outlined,
+                  Colors.red.shade900,
+                  "Cancelled orders",
+                      () {
+                    setState(() {
+                      showCancelledOrders = !showCancelledOrders;
+                      showDeliveredOrders = false;
+                      showWaitingorders = false;
+                      showDriverwaiting = false;
+                    });
+                  },
+                ),
+                _buildButton(
+                  Icons.directions_car_outlined,
+                  Colors.orange.shade900,
+                  "Driver Confirmation",
+                      () {
+                    setState(() {
+                      showDriverwaiting = !showDriverwaiting;
+                      showDeliveredOrders = false;
+                      showWaitingorders = false;
+                      showCancelledOrders = false;
+                    });
+                    // Add your notification button functionality here
+                  },
+                ),
+              ],
             ),
           ),
           Positioned(
@@ -289,8 +199,48 @@ class _AdminDashboardState extends State<AdminDashboard> {
               child: WaitingordersScreen(),
             ),
           ),
-
+          Positioned(
+            top: 230.0,
+            left: 250.0,
+            right: 200.0,
+            bottom: 0.0,
+            child: Visibility(
+              visible: showDriverwaiting,
+              child: DriverwaitingScreen(),
+            ),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildButton(IconData icon, Color color, String label, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20.0),
+          color: Colors.orange.shade100,
+        ),
+        padding: EdgeInsets.all(10),
+        child: Column(
+          children: [
+            Icon(
+              icon,
+              size: 50,
+              color: color,
+            ),
+            SizedBox(height: 5),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

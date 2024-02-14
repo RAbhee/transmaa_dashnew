@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:transmaa_dash/sidebuttons/rejected.dart';
+import 'package:transmaa_dash/sidebuttons/verified.dart';
 
 class VerificationScreen extends StatelessWidget {
   @override
@@ -7,10 +9,45 @@ class VerificationScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('Verification'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.check, color: Colors.green),
+            onPressed: () {
+              FirebaseFirestore.instance.collection('Driver').get().then((querySnapshot) {
+                // Fetch the driverData from the current snapshot
+                QueryDocumentSnapshot<Map<String, dynamic>> driverData = querySnapshot.docs[0]; // Assuming you want the first document
+                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'verified'}).then((_) {
+                  // Navigate to RejectedScreen and pass driverData
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => VerifiedScreen(driverData)),
+                  );
+                });
+              });
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.close, color: Colors.red),
+            onPressed: () {
+              FirebaseFirestore.instance.collection('Driver').get().then((querySnapshot) {
+                // Fetch the driverData from the current snapshot
+                QueryDocumentSnapshot<Map<String, dynamic>> driverData = querySnapshot.docs[0]; // Assuming you want the first document
+                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'not verified'}).then((_) {
+                  // Navigate to RejectedScreen and pass driverData
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RejectedScreen(driverData)),
+                  );
+                });
+              });
+            },
+          ),
+
+        ],
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('Driver').snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
@@ -23,15 +60,13 @@ class VerificationScreen extends StatelessWidget {
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              var driverData = snapshot.data!.docs[index];
-              Map<String, dynamic> driver = driverData.data() as Map<String, dynamic>;
-
-              // Get the URL of the image from the Firestore document
+              QueryDocumentSnapshot<Map<String, dynamic>> driverData = snapshot.data!.docs[index];
+              Map<String, dynamic> driver = driverData.data();
               String imageUrl = driver['image'];
 
-              // Create a Card to display driver information
               return Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                elevation: 5,
                 child: Padding(
                   padding: EdgeInsets.all(20),
                   child: Column(
@@ -40,12 +75,12 @@ class VerificationScreen extends StatelessWidget {
                       Text(
                         'Driver ${index + 1}',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
+                          color: Colors.blue,
                         ),
                       ),
-                      SizedBox(height: 10),
-                      // Display the image as an icon
+                      SizedBox(height: 15),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -53,12 +88,16 @@ class VerificationScreen extends StatelessWidget {
                             MaterialPageRoute(builder: (context) => ImageScreen(imageUrl)),
                           );
                         },
-                        child: Icon(Icons.image, size: 100),
+                        child: Image.network(
+                          imageUrl,
+                          width: 150,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                      SizedBox(height: 10),
-                      Divider(),
-                      SizedBox(height: 10),
-                      // Display driver information
+                      SizedBox(height: 15),
+                      Divider(color: Colors.grey),
+                      SizedBox(height: 15),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: driver.entries.map((entry) {
@@ -73,19 +112,27 @@ class VerificationScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.check, size: 30),
+                            icon: Icon(Icons.check, size: 30, color: Colors.green),
                             onPressed: () {
-                              // Implement functionality for correct button
-                              // You can add logic to mark the driver as verified
-                              // For example: FirebaseFirestore.instance.collection('drivers').doc(driverData.id).update({'verified': true});
+                              FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'verified'}).then((_) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => VerifiedScreen(driverData)),
+                                );
+                              });
                             },
                           ),
+                          SizedBox(width: 10),
                           IconButton(
-                            icon: Icon(Icons.close, size: 30),
+                            icon: Icon(Icons.close, size: 30, color: Colors.red),
                             onPressed: () {
-                              // Implement functionality for incorrect button
-                              // You can add logic to mark the driver as unverified
-                              // For example: FirebaseFirestore.instance.collection('drivers').doc(driverData.id).update({'verified': false});
+                              FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'rejected'}).then((_) {
+                                // Navigate to RejectedScreen and pass driverData
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => RejectedScreen(driverData)),
+                                );
+                              });
                             },
                           ),
                         ],
@@ -101,6 +148,7 @@ class VerificationScreen extends StatelessWidget {
     );
   }
 }
+
 class ImageScreen extends StatelessWidget {
   final String imageUrl;
 
@@ -124,4 +172,3 @@ class ImageScreen extends StatelessWidget {
     );
   }
 }
-
