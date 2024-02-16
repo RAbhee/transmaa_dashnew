@@ -4,11 +4,11 @@ class SideContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      top: 0.0,
-      bottom: 0.0,
-      left: 0.0,
+      top: 20.0,
+      left: 20.0,
       child: Container(
-        width: 220.0,
+        width: 200.0,
+        height: 620,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
           color: Colors.orange.shade100,
@@ -28,15 +28,15 @@ class SideContainer extends StatelessWidget {
               Text(
                 'Dashboard',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: Colors.red.shade900,
                   fontWeight: FontWeight.bold,
-                  fontSize: 24.0,
+                  fontSize: 30.0,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Divider(
-                color: Colors.white,
-                thickness: 2,
+                color: Colors.red.shade900,
+                thickness: 3,
               ),
               SizedBox(height: 20),
               buildMenuItem(context, 'Loads', Icons.local_shipping, '/loads'),
@@ -54,33 +54,42 @@ class SideContainer extends StatelessWidget {
       ),
     );
   }
-
   Widget buildMenuItem(BuildContext context, String title, IconData icon, String route) {
-    return InkWell(
-      onTap: () {
-        Navigator.pushNamed(context, route);
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: Colors.black,
-              size: 24,
-            ),
-            SizedBox(width: 10),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 18,
+    return Container(
+      width: double.infinity, // Ensure the container takes full width
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20.0),
+        color: Colors.orange.shade100,
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(context, route);
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
                 color: Colors.black,
-                fontWeight: FontWeight.w500, // Adjusted font weight
+                size: 30,
               ),
-            ),
-          ],
+              SizedBox(height: 5),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500, // Adjusted font weight
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+
 }

@@ -44,77 +44,102 @@ class WaitingordersScreen extends StatelessWidget {
               int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
 
               // Fetching name and phone number
-              String name = order['name'] ?? ''; // Adjust field name if different in Firestore
+              String enteredName = order['enteredName'] ?? ''; // Adjust field name if different in Firestore
               String phoneNumber = order['phoneNumber'] ?? ''; // Adjust field name if different in Firestore
 
-              return Container(
-                key: Key(orderData.id), // Use document id as key
+              return Card(
                 margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Displaying fields
-                    Text('Name: $name'), // Display name
-                    Text('Phone Number: $phoneNumber'), // Display phone number
-                    Text('Goods Type: $selectedGoodsType'),
-                    Text('Date: ${selectedDate.toLocal()}'), // Displaying formatted date
-                    Text('Time: $selectedTime'),
-                    Text('From: $fromLocation'),
-                    Text('To: $toLocation'),
-                    // Displaying selectedTruck details
-                    Text('Truck Name: $selectedTruckName'),
-                    Text('Truck Price: $selectedTruckPrice'),
-                    Text('Truck Weight Capacity: $selectedTruckWeightCapacity'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            // Handle accept button press
-                            // Store data in a different collection
-                            FirebaseFirestore.instance.collection('accepted_orders').add({
-                              'name': name, // Assuming 'name' is retrieved from Firestore
-                              'phoneNumber': phoneNumber,
-                              'selectedGoodsType': selectedGoodsType,
-                              'selectedDate': selectedDateTimestamp,
-                              'selectedTime': selectedTime,
-                              'selectedTruck': selectedTruckData,
-                              // You can add more fields if necessary
-                            });
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Name: $enteredName',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(height: 4),
+                      Text('Phone Number: $phoneNumber'),
+                      SizedBox(height: 8),
+                      Text('Goods Type: $selectedGoodsType'),
+                      Text('Date: ${selectedDate.toLocal()}'),
+                      Text('Time: $selectedTime'),
+                      Text('From: $fromLocation'),
+                      Text('To: $toLocation'),
+                      SizedBox(height: 8),
+                      Text(
+                        'Truck Details:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Truck Name: $selectedTruckName'),
+                      Text('Truck Price: $selectedTruckPrice'),
+                      Text('Truck Weight Capacity: $selectedTruckWeightCapacity'),
+                      SizedBox(height: 16),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              // Handle accept button press
+                              // Store data in a different collection
+                              FirebaseFirestore.instance.collection('Transmaa_accepted_orders').add({
+                                'name': enteredName, // Assuming 'name' is retrieved from Firestore
+                                'phoneNumber': phoneNumber,
+                                'selectedGoodsType': selectedGoodsType,
+                                'selectedDate': selectedDateTimestamp,
+                                'selectedTime': selectedTime,
+                                'selectedTruck': selectedTruckData,
+                                'fromLocation': fromLocation,
+                                'toLocation': toLocation,
+                                // You can add more fields if necessary
+                              });
 
-                            // Delete the document from pickup_requests collection
-                            orderData.reference.delete();
-                          },
-                          child: Text('Accept'),
-                        ),
-                        SizedBox(width: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            // Store rejected data in Firestore
-                            FirebaseFirestore.instance.collection('rejected_orders').add({
-                              'name': name, // Assuming 'name' is retrieved from Firestore
-                              'phoneNumber': phoneNumber, // Assuming 'phoneNumber' is retrieved from Firestore
-                              'selectedGoodsType': selectedGoodsType,
-                              'selectedDate': selectedDateTimestamp,
-                              'selectedTime': selectedTime,
-                              'selectedTruck': selectedTruckData,
-                              // You can add more fields if necessary
-                            });
+                              // Delete the document from pickup_requests collection
+                              orderData.reference.delete();
+                            }, style: ElevatedButton.styleFrom(
+                            primary: Colors.green, // Change the color here
+                          ),
+                            child: Text('Accept',style:
+                              TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 17,
+                              ),),
+                          ),
+                          SizedBox(width: 10),
+                          ElevatedButton(
+                            onPressed: () {
+                              // Store rejected data in Firestore
+                              FirebaseFirestore.instance.collection('rejected_orders').add({
+                                'name': enteredName, // Assuming 'name' is retrieved from Firestore
+                                'phoneNumber': phoneNumber, // Assuming 'phoneNumber' is retrieved from Firestore
+                                'selectedGoodsType': selectedGoodsType,
+                                'selectedDate': selectedDateTimestamp,
+                                'selectedTime': selectedTime,
+                                'selectedTruck': selectedTruckData,
+                                'fromLocation': fromLocation,
+                                'toLocation': toLocation,
+                                // You can add more fields if necessary
+                              });
 
-                            // Delete the document from pickup_requests collection
-                            orderData.reference.delete();
-                          },
-                          child: Text('Reject'),
-                        ),
 
-                      ],
-                    ),
-                  ],
+                              // Delete the document from pickup_requests collection
+                              orderData.reference.delete();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red, // Change the color here
+                            ),
+                            child: Text('Reject',style:
+                                    TextStyle(
+                                      color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                            fontSize: 17,
+                                      ),),),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
