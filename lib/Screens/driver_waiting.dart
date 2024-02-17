@@ -9,7 +9,7 @@ class DriverwaitingScreen extends StatelessWidget {
         title: Text('Driverwaiting'),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('driver_accepted_orders').snapshots(),
+        stream: FirebaseFirestore.instance.collection('drivers accepted orders').snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
