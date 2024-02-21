@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'Buyscreen.dart';
 import 'Sellscreen.dart'; // Import your next screen file here
 
 class BuynSellScreen extends StatelessWidget {
@@ -14,7 +15,8 @@ class BuynSellScreen extends StatelessWidget {
         children: [
           // Background Image
           Image.asset(
-            'assets/images/newbgg.jpg',
+            'assets/images/newbgg'
+                '.jpg',
             fit: BoxFit.cover,
           ),
           // Centered Logo and Image Row with Animations
@@ -28,10 +30,11 @@ class BuynSellScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  _buildImageWithNavigation(context, 'assets/images/Buy.jpg', 200),
-                  _buildImageWithNavigation(context, 'assets/images/Sell.jpg', 200),
+                  _buildImageWithNavigation(context, 'assets/images/Buy.jpg', 200, BuyingScreen()),
+                  _buildImageWithNavigation(context, 'assets/images/Sell.jpg', 200, SellingScreen()),
                 ],
               ),
+
             ],
           ),
         ],
@@ -39,13 +42,13 @@ class BuynSellScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildImageWithNavigation(BuildContext context, String imagePath, double size) {
+  Widget _buildImageWithNavigation(BuildContext context, String imagePath, double size, Widget screen) {
     return GestureDetector(
       onTap: () {
-        // Navigate to the next screen when image is tapped
+        // Navigate to the corresponding screen when image is tapped
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SellingScreen()), // Replace NextScreen with your screen
+          MaterialPageRoute(builder: (context) => screen),
         );
       },
       child: Container(

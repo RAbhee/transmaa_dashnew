@@ -101,11 +101,11 @@ class WaitingordersScreen extends StatelessWidget {
                             primary: Colors.green, // Change the color here
                           ),
                             child: Text('Accept',style:
-                              TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 17,
-                              ),),
+                            TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17,
+                            ),),
                           ),
                           SizedBox(width: 10),
                           ElevatedButton(
@@ -131,11 +131,11 @@ class WaitingordersScreen extends StatelessWidget {
                               primary: Colors.red, // Change the color here
                             ),
                             child: Text('Reject',style:
-                                    TextStyle(
-                                      color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                            fontSize: 17,
-                                      ),),),
+                            TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 17,
+                            ),),),
                         ],
                       ),
                     ],
