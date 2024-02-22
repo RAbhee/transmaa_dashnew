@@ -44,8 +44,8 @@ class DriverwaitingScreen extends StatelessWidget {
               String selectedGoodsType = order['selectedGoodsType'] ?? '';
               Map<String, dynamic> selectedTruckData = order['selectedTruck'] ?? {};
               String selectedTruckName = selectedTruckData['name'] ?? '';
-              int selectedTruckPrice = selectedTruckData['price'] ?? 0;
-              int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
+              int selectedTruckPrice = int.tryParse(selectedTruckData['price'] ?? '') ?? 0;
+              int selectedTruckWeightCapacity = int.tryParse(selectedTruckData['weightCapacity'] ?? '') ?? 0;
 
               return Container(
                 margin: EdgeInsets.all(10),
@@ -69,9 +69,8 @@ class DriverwaitingScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(child: Container(
-                          ),
-
+                        Expanded(
+                          child: Container(),
                         ), // This expands to fill the space
                         TextButton(
                           onPressed: () {
@@ -86,6 +85,7 @@ class DriverwaitingScreen extends StatelessWidget {
               );
             },
           );
+
         },
       ),
     );

@@ -30,7 +30,7 @@ class BuynSellScreen extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  _buildImageWithNavigation(context, 'assets/images/Buy.jpg', 200, BuyingScreen()),
+                  _buildImageWithNavigation(context, 'assets/images/Buy.jpg', 200, BuyScreen()),
                   _buildImageWithNavigation(context, 'assets/images/Sell.jpg', 200, SellingScreen()),
                 ],
               ),

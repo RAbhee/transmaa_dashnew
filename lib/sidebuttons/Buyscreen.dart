@@ -1,119 +1,111 @@
-import 'dart:ui';
-
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
-class BuyingScreen extends StatelessWidget {
+class BuyScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Selling Screen',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Selling Information'),
-        ),
-        body: StreamBuilder(
-          stream: FirebaseFirestore.instance.collection('Sell_Vechile_infromation').snapshots(),
-          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-              return Center(child: Text('No products available'));
-            }
-            return ListView.builder(
-              itemCount: snapshot.data!.docs.length,
-              itemBuilder: (context, index) {
-                var doc = snapshot.data!.docs[index];
-                var data = doc.data() as Map<String, dynamic>;
-
-                // Extract images array
-                List<String>? imageUrls = data['images']?.cast<String>();
-
-                // Handle null case or empty array
-                if (imageUrls == null || imageUrls.isEmpty) {
-                  return ListTile(
-                    title: Text('No images available'),
-                  );
-                }
-
-                return ListTile(
-                  leading: Image.network(
-                    imageUrls[0], // Display the first image as the leading image
-                    width: 50,
-                    height: 50,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(data['Name'] ?? 'No Name'),
-                  subtitle: Text(data['VehicleModel'] ?? 'No Vehicle Model'),
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductDetails(product: data),
-                      ),
-                    );
-                  },
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
+  _BuyScreenState createState() => _BuyScreenState();
 }
 
-class ProductDetails extends StatelessWidget {
-  final Map<String, dynamic> product;
+class _BuyScreenState extends State<BuyScreen> {
+  final TextEditingController _textFieldController1 = TextEditingController();
+  final TextEditingController _textFieldController2 = TextEditingController();
+  final TextEditingController _textFieldController3 = TextEditingController();
+  File? _image; // Variable to store the selected image
+  final picker = ImagePicker();
 
-  ProductDetails({required this.product});
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Pick image from gallery
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path); // Update selected image file
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+
+  Future<void> uploadData() async {
+    if (_image == null) {
+      print('No image selected.');
+      return;
+    }
+
+    try {
+      String fileName = _image!.path.split('/').last;
+      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('images/$fileName');
+      await firebaseStorageRef.putFile(_image!);
+
+      String imageUrl = await firebaseStorageRef.getDownloadURL();
+
+      // Firestore data
+      Map<String, dynamic> sellData = {
+        'companyName': _textFieldController1.text,
+        'modelName': _textFieldController2.text,
+        'year': _textFieldController3.text,
+        'imageUrl': imageUrl,
+      };
+
+      // Add the data to Firestore
+      await FirebaseFirestore.instance.collection('sell').add(sellData);
+
+      print('Data and image uploaded successfully.');
+    } catch (e) {
+      print('Error uploading data and image: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Extract images array
-    List<String>? imageUrls = product['images']?.cast<String>();
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('Product Details'),
+        title: Text('My Form'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            // Display all images in a row
-            if (imageUrls != null && imageUrls.isNotEmpty)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: imageUrls
-                    .map((imageUrl) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.network(
-                    imageUrl,
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
-                  ),
-                ))
-                    .toList(),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              TextField(
+                controller: _textFieldController1,
+                decoration: InputDecoration(
+                  labelText: 'Company Name',
+                ),
               ),
-            SizedBox(height: 20),
-            Text(
-              product['Name'] ?? 'No Name',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              product['VehicleModel'] ?? 'No Vehicle Model',
-              style: TextStyle(fontSize: 20, color: Colors.green),
-            ),
-          ],
+              SizedBox(height: 20),
+              TextField(
+                controller: _textFieldController2,
+                decoration: InputDecoration(
+                  labelText: 'Model Name',
+                ),
+              ),
+              SizedBox(height: 20),
+              TextField(
+                controller: _textFieldController3,
+                decoration: InputDecoration(
+                  labelText: 'Year',
+                ),
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: getImage,
+                child: Text('Upload Photo'),
+              ),
+              SizedBox(height: 20),
+              _image == null
+                  ? Text('No image selected.') // Display this text if no image is selected
+                  : Image.file(_image!), // Display selected image if available
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: uploadData,
+                child: Text('Submit'),
+              ),
+            ],
+          ),
         ),
       ),
     );
