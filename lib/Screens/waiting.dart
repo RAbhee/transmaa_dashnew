@@ -44,8 +44,8 @@ class WaitingordersScreen extends StatelessWidget {
               int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
 
               // Fetching name and phone number
-              String enteredName = order['enteredName'] ?? ''; // Adjust field name if different in Firestore
-              String phoneNumber = order['phoneNumber'] ?? ''; // Adjust field name if different in Firestore
+              String customerName = order['customerName'] ?? ''; // Adjust field name if different in Firestore
+              String customerphoneNumber = order['customerphoneNumber'] ?? ''; // Adjust field name if different in Firestore
 
               return Card(
                 margin: EdgeInsets.all(10),
@@ -56,11 +56,11 @@ class WaitingordersScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Name: $enteredName',
+                        'customerName: $customerName',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 4),
-                      Text('Phone Number: $phoneNumber'),
+                      Text('customerphoneNumber: $customerphoneNumber'),
                       SizedBox(height: 8),
                       Text('Goods Type: $selectedGoodsType'),
                       Text('Date: ${selectedDate.toLocal()}'),
@@ -84,8 +84,8 @@ class WaitingordersScreen extends StatelessWidget {
                               // Handle accept button press
                               // Store data in a different collection
                               FirebaseFirestore.instance.collection('Transmaa_accepted_orders').add({
-                                'name': enteredName, // Assuming 'name' is retrieved from Firestore
-                                'phoneNumber': phoneNumber,
+                                'customerName': customerName, // Assuming 'name' is retrieved from Firestore
+                                'customerphoneNumber': customerphoneNumber,
                                 'selectedGoodsType': selectedGoodsType,
                                 'selectedDate': selectedDateTimestamp,
                                 'selectedTime': selectedTime,
@@ -112,8 +112,8 @@ class WaitingordersScreen extends StatelessWidget {
                             onPressed: () {
                               // Store rejected data in Firestore
                               FirebaseFirestore.instance.collection('rejected_orders').add({
-                                'name': enteredName, // Assuming 'name' is retrieved from Firestore
-                                'phoneNumber': phoneNumber, // Assuming 'phoneNumber' is retrieved from Firestore
+                                'customerName': customerName, // Assuming 'name' is retrieved from Firestore
+                                'customerphoneNumber': customerphoneNumber, // Assuming 'phoneNumber' is retrieved from Firestore
                                 'selectedGoodsType': selectedGoodsType,
                                 'selectedDate': selectedDateTimestamp,
                                 'selectedTime': selectedTime,

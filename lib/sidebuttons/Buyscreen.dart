@@ -1,8 +1,12 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
 
 class BuyScreen extends StatefulWidget {
   @override
@@ -10,104 +14,276 @@ class BuyScreen extends StatefulWidget {
 }
 
 class _BuyScreenState extends State<BuyScreen> {
-  final TextEditingController _textFieldController1 = TextEditingController();
-  final TextEditingController _textFieldController2 = TextEditingController();
-  final TextEditingController _textFieldController3 = TextEditingController();
-  File? _image; // Variable to store the selected image
-  final picker = ImagePicker();
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController vehicleModelController = TextEditingController();
+  final TextEditingController yearsOfVehicleController = TextEditingController();
 
-  Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery); // Pick image from gallery
+  bool showTextFields = true;
+  Color sellButtonColor = Colors.orangeAccent;
+  Color byeButtonColor = Colors.orangeAccent;
 
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path); // Update selected image file
-      } else {
-        print('No image selected.');
+  List<Uint8List?> _images = List.filled(4, null);
+  Color saveButtonColor = Colors.red;
+
+  Future<String> saveUserDataToFirestore() async {
+    final CollectionReference users = FirebaseFirestore.instance.collection('Buycollection');
+
+    List<String> imageUrls = await uploadImagesToStorage();
+
+    await users.add({
+      'Company': nameController.text,
+      'Year': yearsOfVehicleController.text,
+      'Vehicle Model': vehicleModelController.text,
+      'ImageURLs': imageUrls,
+    });
+
+    return imageUrls.join(", ");
+  }
+  Future<List<String>> uploadImagesToStorage() async {
+    List<String> imageUrls = [];
+    for (int i = 0; i < _images.length; i++) {
+      if (_images[i] != null) {
+        FirebaseStorage storage = FirebaseStorage.instance;
+        Reference ref = storage
+            .ref()
+            .child('images')
+            .child('image_${DateTime.now().millisecondsSinceEpoch}_$i.png');
+
+        await ref.putData(_images[i]!);
+
+        String downloadURL = await ref.getDownloadURL();
+        imageUrls.add(downloadURL);
       }
+    }
+    return imageUrls;
+  }
+
+
+  void disableImageSelection(int index) {
+    setState(() {
+      _images[index] = Uint8List(0);
     });
   }
 
-  Future<void> uploadData() async {
-    if (_image == null) {
-      print('No image selected.');
-      return;
-    }
-
-    try {
-      String fileName = _image!.path.split('/').last;
-      Reference firebaseStorageRef = FirebaseStorage.instance.ref().child('images/$fileName');
-      await firebaseStorageRef.putFile(_image!);
-
-      String imageUrl = await firebaseStorageRef.getDownloadURL();
-
-      // Firestore data
-      Map<String, dynamic> sellData = {
-        'companyName': _textFieldController1.text,
-        'modelName': _textFieldController2.text,
-        'year': _textFieldController3.text,
-        'imageUrl': imageUrl,
-      };
-
-      // Add the data to Firestore
-      await FirebaseFirestore.instance.collection('sell').add(sellData);
-
-      print('Data and image uploaded successfully.');
-    } catch (e) {
-      print('Error uploading data and image: $e');
-    }
+  bool areFieldsValid() {
+    return nameController.text.isNotEmpty &&
+        vehicleModelController.text.isNotEmpty &&
+        yearsOfVehicleController.text.isNotEmpty &&
+        _images.any((image) => image != null);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('My Form'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
+      backgroundColor: Colors.white,
+      body: Container(
+        child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextField(
-                controller: _textFieldController1,
-                decoration: InputDecoration(
-                  labelText: 'Company Name',
+              Container(
+                child: Image.asset(
+                  'assets/images/logo.png',
+                  height: 150,
+                  width: 150,
                 ),
               ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _textFieldController2,
-                decoration: InputDecoration(
-                  labelText: 'Model Name',
+              SizedBox(height: 10,),
+              SizedBox(height: 10,),
+              if (showTextFields) ...[
+                TextFormField(
+                  controller: nameController,
+                  decoration: InputDecoration(
+                    labelText: 'Company',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
-              TextField(
-                controller: _textFieldController3,
-                decoration: InputDecoration(
-                  labelText: 'Year',
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: vehicleModelController,
+                  decoration: InputDecoration(
+                    labelText: 'Model',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  ),
                 ),
-              ),
-              SizedBox(height: 20),
+                SizedBox(height: 10),
+                TextFormField(
+                  controller: yearsOfVehicleController,
+                  decoration: InputDecoration(
+                    labelText: 'Year',
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                  ),
+                ),
+
+                SizedBox(height: 10),
+                Row(
+                  children: [
+                    Padding(padding: EdgeInsets.only(left: 10)),
+                    Text('Upload Images', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black)),
+                  ],
+                ),
+                buildImagePick(),
+              ],
+              SizedBox(height: 10),
               ElevatedButton(
-                onPressed: getImage,
-                child: Text('Upload Photo'),
-              ),
-              SizedBox(height: 20),
-              _image == null
-                  ? Text('No image selected.') // Display this text if no image is selected
-                  : Image.file(_image!), // Display selected image if available
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: uploadData,
-                child: Text('Submit'),
+                onPressed: () async {
+                  if (areFieldsValid()) {
+                    await saveUserDataToFirestore();
+                    setState(() {
+                      saveButtonColor = Colors.green;
+                    });
+                    for (int i = 0; i < _images.length; i++) {
+                      if (_images[i] != null) {
+                        disableImageSelection(i);
+                      }
+                    }
+                    // Optionally, you can show a confirmation message after successful save.
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Data saved successfully'),
+                      duration: Duration(seconds: 2),
+                    ));
+                  } else {
+                    setState(() {
+                      saveButtonColor = Colors.red;
+                    });
+                    // Show a snackbar or any other indication for invalid fields
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text('Please fill in all fields and upload the image.'),
+                      duration: Duration(seconds: 2),
+                    ));
+                  }
+                },
+
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                    if (states.contains(MaterialState.disabled)) {
+                      return saveButtonColor.withOpacity(0.5);
+                    }
+                    return saveButtonColor;
+                  }),
+                ),
+                child: Text('Save Data'),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildImagePick() {
+    return Row(
+      children: List.generate(1, (index) {
+        return Expanded(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ImagePick(
+              onImagePicked: (Uint8List? image) {
+                setState(() {
+                  _images[index] = image;
+                });
+              },
+              width: 140,
+              height: 140,
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
+
+class ImagePick extends StatefulWidget {
+  final Function(Uint8List?) onImagePicked;
+  final double width;
+  final double height;
+
+  ImagePick({
+    required this.onImagePicked,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  _ImagePickState createState() => _ImagePickState();
+}
+
+class _ImagePickState extends State<ImagePick> {
+  Uint8List? _image;
+
+  void selectImage() async {
+    Uint8List? img = await pickImage(ImageSource.gallery);
+    if (img != null) {
+      setState(() {
+        _image = img;
+      });
+      widget.onImagePicked(_image);
+    }
+  }
+
+  Future<Uint8List?> pickImage(ImageSource source) async {
+    final ImagePicker imagePicker = ImagePicker();
+    XFile? file = await imagePicker.pickImage(source: source);
+    if (file != null) {
+      return await file.readAsBytes();
+    }
+    print('No Images Selected');
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                child: Text(
+                  'Front side',
+                  style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold),
+                ),
+              ),
+              SizedBox(height: 5,),
+              Stack(
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: Colors.blue[50],
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: _image != null
+                        ? Image.memory(
+                      _image!,
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    )
+                        : Container(),
+                  ),
+                  Positioned(
+                    child: IconButton(
+                      onPressed: selectImage,
+                      icon: Icon(Icons.add_a_photo),
+                    ),
+                    bottom: 30,
+                    left: 30,
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

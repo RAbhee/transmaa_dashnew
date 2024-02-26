@@ -218,7 +218,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                   ),
                   SizedBox(height: 10),
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildButton(
                           context,
@@ -226,8 +226,15 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           Colors.orange.shade900,
                           "Driver Confirmation",
                           '/driver_waiting'),
+                      _buildButton(
+                          context,
+                          Icons.directions_car_outlined,
+                          Colors.blue.shade900,
+                          "Orders On the Way",
+                          '/Orders_OntheWay'),
                     ],
                   ),
+
                 ],
               ),
             ),
@@ -238,7 +245,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
             right: 450.0,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Colors.orange.shade100,
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black26,

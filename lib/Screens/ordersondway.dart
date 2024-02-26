@@ -20,9 +20,10 @@ class DriverwaitingScreen extends StatelessWidget {
           if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
             return Center(child: Text('No waiting orders available'));
           }
-          List<Map<String, dynamic>> driverWaiting = snapshot.data!.docs.map((doc) {
+          List<Map<String, dynamic>> driverWaitingOrders = snapshot.data!.docs.map((doc) {
             Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
             return {
+              'phoneNumber': data['phoneNumber'] ?? '',
               'fromLocation': data['fromLocation'] ?? '',
               'toLocation': data['toLocation'] ?? '',
               'selectedGoodsType': data['selectedGoodsType'] ?? '',
@@ -33,10 +34,11 @@ class DriverwaitingScreen extends StatelessWidget {
           }).toList();
 
           return ListView.builder(
-            itemCount: driverWaiting.length,
+            itemCount: driverWaitingOrders.length,
             itemBuilder: (context, index) {
-              var order = driverWaiting[index];
+              var order = driverWaitingOrders[index];
 
+              String phoneNumber = order['phoneNumber'] ?? '';
               String fromLocation = order['fromLocation'] ?? '';
               String toLocation = order['toLocation'] ?? '';
               DateTime selectedDate = order['selectedDate'] ?? DateTime.now();
@@ -45,13 +47,7 @@ class DriverwaitingScreen extends StatelessWidget {
               Map<String, dynamic> selectedTruckData = order['selectedTruck'] ?? {};
               String selectedTruckName = selectedTruckData['name'] ?? '';
               double selectedTruckPrice = (selectedTruckData['price'] ?? 0).toDouble();
-
-              int? selectedTruckWeightCapacity;
-              if (selectedTruckData['weightCapacity'] != null) {
-                selectedTruckWeightCapacity = int.tryParse(selectedTruckData['weightCapacity']);
-              } else {
-                selectedTruckWeightCapacity = 0; // Assigning 0 as default value
-              }
+              int selectedTruckWeightCapacity = (selectedTruckData['weightCapacity'] ?? 0).toInt();
 
               return Container(
                 margin: EdgeInsets.all(10),
@@ -63,13 +59,14 @@ class DriverwaitingScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('Phone Number: $phoneNumber'), // Display phoneNumber
                     Text('From Location : $fromLocation'),
                     Text('To Location : $toLocation'),
                     Text('Date : ${selectedDate.toLocal()}'),
                     Text('Time : $selectedTime'),
                     Text('Selected Goods Type : $selectedGoodsType'),
                     Text('Truck Name : $selectedTruckName'),
-                    Text('Truck Price : $selectedTruckPrice'),
+                    Text('Truck Price : $selectedTruckPrice.toStringAsFixed(2)'),
                     Text('Truck Weight Capacity : $selectedTruckWeightCapacity'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -80,9 +77,10 @@ class DriverwaitingScreen extends StatelessWidget {
                         ), // This expands to fill the space
                         TextButton(
                           onPressed: () {
-                            // Add your button action here
+                            // Call function to store data in Firestore
+                            _storeDataInFirestore(order);
                           },
-                          child: Text('Button'),
+                          child: Text('Order Delivered'),
                         ),
                       ],
                     ),
@@ -95,5 +93,10 @@ class DriverwaitingScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  void _storeDataInFirestore(Map<String, dynamic> data) {
+    // Add your code to store data in Firestore
+    FirebaseFirestore.instance.collection('OtherCollection').add(data);
   }
 }
