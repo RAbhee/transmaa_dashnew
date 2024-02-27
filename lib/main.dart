@@ -9,6 +9,7 @@ import 'package:transmaa_dash/sidebuttons/loads.dart';
 import 'package:transmaa_dash/sidebuttons/verification.dart';
 import 'Screens/Side drawer.dart';
 import 'Screens/cancelled.dart';
+import 'Screens/confirmed.dart';
 import 'Screens/delivered.dart';
 import 'Screens/driver_waiting.dart';
 import 'Screens/waiting.dart';
@@ -35,7 +36,8 @@ class MyApp extends StatelessWidget {
         '/delivered_orders': (context) => DeliveredOrdersScreen(),
         '/cancelled_orders': (context) => CancelledOrdersScreen(),
         '/waiting_orders': (context) => WaitingordersScreen(),
-        '/driver_waiting': (context) => DriverwaitingScreen(),
+        '/driver_waiting': (context) => DriversAcceptedOrders(),
+        '/confirmed_orders': (context) => ConfirmedordersScreen(),
       },
       debugShowCheckedModeBanner: false,
       title: 'Logistics Admin Dashboard',

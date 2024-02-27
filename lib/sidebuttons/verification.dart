@@ -11,42 +11,38 @@ class VerificationScreen extends StatelessWidget {
         title: Text('Verification'),
         actions: [
           IconButton(
-            icon: Icon(Icons.check, color: Colors.green),
             onPressed: () {
-              FirebaseFirestore.instance.collection('Driver').get().then((querySnapshot) {
-                // Fetch the driverData from the current snapshot
-                QueryDocumentSnapshot<Map<String, dynamic>> driverData = querySnapshot.docs[0]; // Assuming you want the first document
-                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'verified'}).then((_) {
-                  // Navigate to RejectedScreen and pass driverData
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => VerifiedScreen(driverData)),
-                  );
-                });
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Verifiedscreens()),
+              );
             },
+            icon: Icon(
+              Icons.check,
+              color: Colors.green,
+              size: 35,
+            ),
           ),
           IconButton(
-            icon: Icon(Icons.close, color: Colors.red),
             onPressed: () {
-              FirebaseFirestore.instance.collection('Driver').get().then((querySnapshot) {
-                // Fetch the driverData from the current snapshot
-                QueryDocumentSnapshot<Map<String, dynamic>> driverData = querySnapshot.docs[0]; // Assuming you want the first document
-                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'not verified'}).then((_) {
-                  // Navigate to RejectedScreen and pass driverData
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RejectedScreen(driverData)),
-                  );
-                });
-              });
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Rejectedscreens()),
+              );
             },
+            icon: Icon(
+              Icons.close,
+              color: Colors.red,
+              size: 35,
+            ),
           ),
-
         ],
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection('Driver').snapshots(),
+        stream: FirebaseFirestore.instance
+            .collection('Driver')
+            .where('status', isEqualTo: 'pending')
+            .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
@@ -63,6 +59,9 @@ class VerificationScreen extends StatelessWidget {
               QueryDocumentSnapshot<Map<String, dynamic>> driverData = snapshot.data!.docs[index];
               Map<String, dynamic> driver = driverData.data();
               String imageUrl = driver['image'];
+              String name = driver['name'];
+              String status = driver['status'];
+              String phoneNumber = driver['phone_number']; // Assuming you have phone number in your data
 
               return Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -72,28 +71,51 @@ class VerificationScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Driver ${index + 1}',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue,
-                        ),
-                      ),
-                      SizedBox(height: 15),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => ImageScreen(imageUrl)),
-                          );
-                        },
-                        child: Image.network(
-                          imageUrl,
-                          width: 150,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => ImageScreen(imageUrl)),
+                              );
+                            },
+                            child: Image.network(
+                              imageUrl,
+                              width: 150,
+                              height: 150,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          SizedBox(width: 20,),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Name: $name',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Status: $status',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: status == 'verified' ? Colors.green : status == 'rejected' ? Colors.red : Colors.black,
+                                ),
+                              ),
+                              Text(
+                                'Phone: $phoneNumber',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                       SizedBox(height: 15),
                       Divider(color: Colors.grey),
@@ -101,39 +123,50 @@ class VerificationScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: driver.entries.map((entry) {
-                          return Text(
-                            '${entry.key}: ${entry.value}',
-                            style: TextStyle(fontSize: 16),
-                          );
+                          if (entry.key != 'image' && entry.key != 'name' && entry.key != 'status' && entry.key != 'phone_number') {
+                            return Text(
+                              '${entry.key}: ${entry.value}',
+                              style: TextStyle(fontSize: 16),
+                            );
+                          } else {
+                            return SizedBox.shrink();
+                          }
                         }).toList(),
                       ),
                       SizedBox(height: 20),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          IconButton(
-                            icon: Icon(Icons.check, size: 30, color: Colors.green),
+                          ElevatedButton(
                             onPressed: () {
-                              FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'verified'}).then((_) {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => VerifiedScreen(driverData)),
-                                );
-                              });
+                              if (status.toLowerCase() == 'pending') { // corrected case here
+                                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'verified'});
+                              }
                             },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              padding: EdgeInsets.all(10),
+                            ),
+                            child: Text(
+                              'Verify',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
                           ),
                           SizedBox(width: 10),
-                          IconButton(
-                            icon: Icon(Icons.close, size: 30, color: Colors.red),
+                          ElevatedButton(
                             onPressed: () {
-                              FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'rejected'}).then((_) {
-                                // Navigate to RejectedScreen and pass driverData
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => RejectedScreen(driverData)),
-                                );
-                              });
+                              if (status.toLowerCase() == 'pending') { // corrected case here
+                                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'rejected'});
+                              }
                             },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                              padding: EdgeInsets.all(10),
+                            ),
+                            child: Text(
+                              'Reject',
+                              style: TextStyle(fontSize: 16, color: Colors.white),
+                            ),
                           ),
                         ],
                       ),

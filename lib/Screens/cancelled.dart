@@ -7,8 +7,6 @@ class CancelledOrdersScreen extends StatefulWidget {
 }
 
 class _CancelledOrdersScreenState extends State<CancelledOrdersScreen> {
-  bool isHovering = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,56 +59,42 @@ class _CancelledOrdersScreenState extends State<CancelledOrdersScreen> {
                 int selectedTruckPrice = selectedTruckData['price'] ?? 0;
                 int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
 
-                return MouseRegion(
-                  onEnter: (_) {
-                    setState(() {
-                      isHovering = true;
-                    });
-                  },
-                  onExit: (_) {
-                    setState(() {
-                      isHovering = false;
-                    });
-                  },
-                  child: isHovering
-                      ? Container(
-                    margin: EdgeInsets.all(10),
-                    padding: EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                      borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Color(0xFFE95C01),
-                          Color(0xFAFCAE1D),
-                          Color(0xFFF96101),
-                        ],
+                return Container(
+                  margin: EdgeInsets.all(10),
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFE3E2E2),
+                        Color(0xFAFFF9EE),
+                        Color(0xFFDEDDDD),
+                      ],
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.5),
+                        blurRadius: 10,
+                        offset: Offset(0, 3),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.5),
-                          blurRadius: 10,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Name: $name', style: TextStyle(color: Colors.white)),
-                        Text('Phone Number: $phoneNumber', style: TextStyle(color: Colors.white)),
-                        Text('Goods Type: $selectedGoodsType', style: TextStyle(color: Colors.white)),
-                        Text('Date: ${selectedDate.toLocal()}', style: TextStyle(color: Colors.white)),
-                        Text('Time: $selectedTime', style: TextStyle(color: Colors.white)),
-                        Text('Truck Name: $selectedTruckName', style: TextStyle(color: Colors.white)),
-                        Text('Truck Price: $selectedTruckPrice', style: TextStyle(color: Colors.white)),
-                        Text('Truck Weight Capacity: $selectedTruckWeightCapacity', style: TextStyle(color: Colors.white)),
-                      ],
-                    ),
-                  )
-                      : Container(),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Name: $name', style: TextStyle(color: Colors.black87)),
+                      Text('Phone Number: $phoneNumber', style: TextStyle(color: Colors.blue.shade900)),
+                      Text('Goods Type: $selectedGoodsType', style: TextStyle(color: Colors.black87)),
+                      Text('Date: ${selectedDate.toLocal()}', style: TextStyle(color: Colors.blue.shade900)),
+                      Text('Time: $selectedTime', style: TextStyle(color: Colors.black87)),
+                      Text('Truck Name: $selectedTruckName', style: TextStyle(color: Colors.blue.shade900)),
+                      Text('Truck Price: $selectedTruckPrice', style: TextStyle(color: Colors.black87)),
+                      Text('Truck Weight Capacity: $selectedTruckWeightCapacity', style: TextStyle(color: Colors.blue.shade900)),
+                    ],
+                  ),
                 );
               },
             );

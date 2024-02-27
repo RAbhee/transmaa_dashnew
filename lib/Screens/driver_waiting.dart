@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DriverwaitingScreen extends StatelessWidget {
+class DriversAcceptedOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Driverwaiting'),
+        title: Text('Drivers Accepted Orders'),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('DriversAcceptedOrders').snapshots(),
@@ -18,80 +18,76 @@ class DriverwaitingScreen extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No waiting orders available'));
+            return Center(child: Text('No data available'));
           }
-          List<Map<String, dynamic>> driverWaiting = snapshot.data!.docs.map((doc) {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-            return {
-              'fromLocation': data['fromLocation'] ?? '',
-              'toLocation': data['toLocation'] ?? '',
-              'selectedGoodsType': data['selectedGoodsType'] ?? '',
-              'selectedDate': (data['selectedDate'] as Timestamp).toDate() ?? DateTime.now(),
-              'selectedTime': data['selectedTime'] ?? '',
-              'selectedTruck': data['selectedTruck'] ?? {},
-            };
-          }).toList();
-
           return ListView.builder(
-            itemCount: driverWaiting.length,
+            itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              var order = driverWaiting[index];
+              var orderData = snapshot.data!.docs[index];
+              Map<String, dynamic> order = orderData.data() as Map<String, dynamic>;
 
+              // Extracting fields
+              String selectedGoodsType = order['selectedGoodsType'] ?? '';
+              String selectedTime = order['selectedTime'] ?? '';
               String fromLocation = order['fromLocation'] ?? '';
               String toLocation = order['toLocation'] ?? '';
-              DateTime selectedDate = order['selectedDate'] ?? DateTime.now();
-              String selectedTime = order['selectedTime'] ?? '';
-              String selectedGoodsType = order['selectedGoodsType'] ?? '';
+
+              // Handling selectedDate
+              Timestamp selectedDateTimestamp = order['selectedDate'] ?? Timestamp.now();
+              DateTime selectedDate = selectedDateTimestamp.toDate();
+
+              // Handling selectedTruck
               Map<String, dynamic> selectedTruckData = order['selectedTruck'] ?? {};
               String selectedTruckName = selectedTruckData['name'] ?? '';
-              double selectedTruckPrice = (selectedTruckData['price'] ?? 0).toDouble();
+              int selectedTruckPrice = selectedTruckData['price'] ?? 0;
+              int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
 
-              int? selectedTruckWeightCapacity;
-              if (selectedTruckData['weightCapacity'] != null) {
-                selectedTruckWeightCapacity = int.tryParse(selectedTruckData['weightCapacity']);
-              } else {
-                selectedTruckWeightCapacity = 0; // Assigning 0 as default value
-              }
+              // Fetching name and phone number
+              String customerName = order['customerName'] ?? ''; // Adjust field name if different in Firestore
+              String customerphoneNumber = order['customerphoneNumber'] ?? '';// Adjust field name if different in Firestore
+              String driverName = order['driverName'] ?? '';// Adjust field name if different in Firestore
+              String driverPhoneNumber = order['driverPhoneNumber'] ?? '';// Adjust field name if different in Firestore
 
-              return Container(
+              return Card(
                 margin: EdgeInsets.all(10),
-                padding: EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('From Location : $fromLocation'),
-                    Text('To Location : $toLocation'),
-                    Text('Date : ${selectedDate.toLocal()}'),
-                    Text('Time : $selectedTime'),
-                    Text('Selected Goods Type : $selectedGoodsType'),
-                    Text('Truck Name : $selectedTruckName'),
-                    Text('Truck Price : $selectedTruckPrice'),
-                    Text('Truck Weight Capacity : $selectedTruckWeightCapacity'),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Container(),
-                        ), // This expands to fill the space
-                        TextButton(
-                          onPressed: () {
-                            // Add your button action here
-                          },
-                          child: Text('Button'),
-                        ),
-                      ],
-                    ),
-                  ],
+                elevation: 4,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Customer Name: $customerName',
+                        style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text('customerphoneNumber: $customerphoneNumber',
+                        style: TextStyle(fontWeight: FontWeight.bold),),
+                      SizedBox(height: 2),
+                      Text(
+                        'Driver Name: $driverName',
+                        style: TextStyle(fontWeight: FontWeight.bold),),
+                      Text('Driver Phone Number: $driverPhoneNumber',
+                        style: TextStyle(fontWeight: FontWeight.bold),),
+                      SizedBox(height: 4),
+                      Text('Goods Type: $selectedGoodsType'),
+                      Text('Date: ${selectedDate.toLocal()}'),
+                      Text('Time: $selectedTime'),
+                      Text('From: $fromLocation'),
+                      Text('To: $toLocation'),
+                      SizedBox(height: 8),
+                      Text(
+                        'Truck Details:',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Text('Truck Name: $selectedTruckName'),
+                      Text('Truck Price: $selectedTruckPrice'),
+                      Text('Truck Weight Capacity: $selectedTruckWeightCapacity'),
+
+                    ],
+                  ),
                 ),
               );
             },
           );
-
         },
       ),
     );
