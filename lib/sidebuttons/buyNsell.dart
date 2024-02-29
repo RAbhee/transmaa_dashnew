@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'Buyscreen.dart';
+import 'Interested.dart';
 import 'Sellscreen.dart'; // Import your next screen file here
 
 class BuynSellScreen extends StatefulWidget {
@@ -67,6 +68,25 @@ class _BuynSellScreenState extends State<BuynSellScreen>
           ),
         ],
       ),
+      bottomNavigationBar: Container(
+        margin: EdgeInsets.all(20.0),
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => InterestedScreen()),
+            );
+
+          },
+          child: Text('Interested',
+            style: TextStyle(
+              color: Colors.black,
+                fontWeight: FontWeight.w500,
+                   fontSize: 16
+            ),
+          ),
+      ),
+      )
     );
   }
 
@@ -110,6 +130,7 @@ class _BuynSellScreenState extends State<BuynSellScreen>
           ),
         ),
       ),
+
     );
   }
 }
