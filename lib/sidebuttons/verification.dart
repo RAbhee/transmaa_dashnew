@@ -41,7 +41,7 @@ class VerificationScreen extends StatelessWidget {
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('Driver')
-            .where('status', isEqualTo: 'pending')
+            .where('status', isEqualTo: 'Pending')
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

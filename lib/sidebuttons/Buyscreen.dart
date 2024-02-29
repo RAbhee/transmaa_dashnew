@@ -147,7 +147,7 @@ class _BuyScreenState extends State<BuyScreen> {
                     ));
                   } else {
                     setState(() {
-                      saveButtonColor = Colors.red;
+                      saveButtonColor = Colors.green;
                     });
                     // Show a snackbar or any other indication for invalid fields
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -165,7 +165,9 @@ class _BuyScreenState extends State<BuyScreen> {
                     return saveButtonColor;
                   }),
                 ),
-                child: Text('Save Data'),
+                child: Text('Save Data',style: TextStyle(
+                  color: Colors.white
+                ),),
               ),
             ],
           ),
