@@ -41,7 +41,7 @@ class WaitingordersScreen extends StatelessWidget {
               Map<String, dynamic> selectedTruckData = order['selectedTruck'] ?? {};
               String selectedTruckName = selectedTruckData['name'] ?? '';
               int selectedTruckPrice = selectedTruckData['price'] ?? 0;
-              int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
+              String selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? '';
 
               // Fetching name and phone number
               String customerName = order['customerName'] ?? ''; // Adjust field name if different in Firestore

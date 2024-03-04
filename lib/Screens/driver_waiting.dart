@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:http/http.dart'as http;
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -29,15 +29,18 @@ class DriversAcceptedOrders extends StatelessWidget {
       print('Failed to send SMS: ${response.body}');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        centerTitle: true,
         title: Text('Drivers Accepted Orders'),
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance.collection('DriversAcceptedOrders')
-            .where('status', isEqualTo: "pending")
+            .where('status', isEqualTo: "Pending")
             .snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
@@ -53,40 +56,27 @@ class DriversAcceptedOrders extends StatelessWidget {
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               var orderData = snapshot.data!.docs[index];
-              Map<String, dynamic> order = orderData.data() as Map<
-                  String,
-                  dynamic>;
-
+              Map<String, dynamic> order = orderData.data() as Map<String, dynamic>;
               // Extracting fields
               String selectedGoodsType = order['selectedGoodsType'] ?? '';
               String selectedTime = order['selectedTime'] ?? '';
               String fromLocation = order['fromLocation'] ?? '';
               String toLocation = order['toLocation'] ?? '';
-
               // Handling selectedDate
-              Timestamp selectedDateTimestamp = order['selectedDate'] ??
-                  Timestamp.now();
+              Timestamp selectedDateTimestamp = order['selectedDate'] ?? Timestamp.now();
               DateTime selectedDate = selectedDateTimestamp.toDate();
-
               // Handling selectedTruck
-              Map<String, dynamic> selectedTruckData = order['selectedTruck'] ??
-                  {};
+              Map<String, dynamic> selectedTruckData = order['selectedTruck'] ?? {};
               String selectedTruckName = selectedTruckData['name'] ?? '';
-              int selectedTruckPrice = selectedTruckData['price'] ?? 0;
-              int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ??
-                  0;
-
+              int? selectedTruckPrice = int.tryParse(selectedTruckData['price'].toString());
+              int? selectedTruckWeightCapacity = int.tryParse(selectedTruckData['weightCapacity'].toString());
 
               // Fetching name and phone number
-              String customerName = order['customerName'] ??
-                  ''; // Adjust field name if different in Firestore
-              String customerphoneNumber = order['customerphoneNumber'] ??
-                  ''; // Adjust field name if different in Firestore
+              String customerName = order['customerName'] ?? ''; // Adjust field name if different in Firestore
+              String customerPhoneNumber = order['customerPhoneNumber'] ?? ''; // Adjust field name if different in Firestore
               String status = order['status'] ?? 'Pending';
-              String driverName = order['driverName'] ??
-                  ''; // Adjust field name if different in Firestore
-              String driverPhoneNumber = order['driverPhoneNumber'] ??
-                  ''; // Adjust field name if different in Firestore
+              String driverName = order['driverName'] ?? ''; // Adjust field name if different in Firestore
+              String driverPhoneNumber = order['driverPhoneNumber'] ?? ''; // Adjust field name if different in Firestore
 
               return Card(
                 margin: EdgeInsets.all(10),
@@ -100,17 +90,12 @@ class DriversAcceptedOrders extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              'Customer Name: $customerName',
-                              style: TextStyle(fontWeight: FontWeight.bold),),
-                            Text('customerphoneNumber: $customerphoneNumber',
-                              style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('Customer Name: $customerName', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text('Customer Phone Number: $customerPhoneNumber', style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(height: 2),
-                            Text(
-                              'Driver Name: $driverName',
-                              style: TextStyle(fontWeight: FontWeight.bold),),
-                            Text('Driver Phone Number: $driverPhoneNumber', style: TextStyle(fontWeight: FontWeight.bold),),
-                            Text('status: $status', style: TextStyle(fontWeight: FontWeight.bold),),
+                            Text('Driver Name: $driverName', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text('Driver Phone Number: $driverPhoneNumber', style: TextStyle(fontWeight: FontWeight.bold)),
+                            Text('Status: $status', style: TextStyle(fontWeight: FontWeight.bold)),
                             SizedBox(height: 4),
                             Text('Goods Type: $selectedGoodsType'),
                             Text('Date: ${selectedDate.toLocal()}'),
@@ -118,18 +103,11 @@ class DriversAcceptedOrders extends StatelessWidget {
                             Text('From: $fromLocation'),
                             Text('To: $toLocation'),
                             SizedBox(height: 8),
-                            Text(
-                              'Truck Details:',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
+                            Text('Truck Details:', style: TextStyle(fontWeight: FontWeight.bold)),
                             Text('Truck Name: $selectedTruckName'),
-                            Text('Truck Price: ${selectedTruckPrice
-                                .toString()}'),
-                            Text(
-                                'Truck Weight Capacity: ${selectedTruckWeightCapacity
-                                    .toString()}'),
+                            Text('Truck Price: ${selectedTruckPrice.toString()}'),
+                            Text('Truck Weight Capacity: ${selectedTruckWeightCapacity.toString()}'),
                             SizedBox(height: 8),
-
                           ],
                         ),
                       ),
@@ -137,13 +115,13 @@ class DriversAcceptedOrders extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           if (status != "Order's to be delivered") {
-                            String driverMessage = 'Hi ${order['driverName']}, Your order is confirmed. From: $fromLocation To: $toLocation Date: ${selectedDate.toLocal()}. For more information, please contact Transmaa.';
-                            String customerMessage = 'Hi ${order['customerName']}, Your order is confirmed. From: $fromLocation To: $toLocation Date: ${selectedDate.toLocal()}. Your driver is ${order['driverName']}. For more information, please contact Transmaa.';
-                            await sendTwilioSMS(order['customerphoneNumber'], customerMessage);
-                            await sendTwilioSMS(order['driverPhoneNumber'], driverMessage);
+                            String driverMessage = 'Hi $driverName, Your order is confirmed. From: $fromLocation To: $toLocation Date: ${selectedDate.toLocal()}. For more information, please contact Transmaa.';
+                            String customerMessage = 'Hi $customerName, Your order is confirmed. From: $fromLocation To: $toLocation Date: ${selectedDate.toLocal()}. Your driver is $driverName. For more information, please contact Transmaa.';
+                            await sendTwilioSMS(customerPhoneNumber, customerMessage);
+                            await sendTwilioSMS(driverPhoneNumber, driverMessage);
 
                             FirebaseFirestore.instance.collection('DriversAcceptedOrders').doc(orderData.id).update({
-                              'status': "Order's to be delivered"
+                              'status': "Order's to be delivered"  // Corrected status value
                             }).then((_) {
                               print('Order status updated successfully.');
                             }).catchError((error) {
@@ -155,7 +133,6 @@ class DriversAcceptedOrders extends StatelessWidget {
                         },
                         child: Text('Send Message'),
                       ),
-
                     ],
                   ),
                 ),

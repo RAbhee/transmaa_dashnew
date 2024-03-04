@@ -39,8 +39,9 @@ class ConfirmedordersScreen extends StatelessWidget {
               // Handling selectedTruck
               Map<String, dynamic> selectedTruckData = order['selectedTruck'] ?? {};
               String selectedTruckName = selectedTruckData['name'] ?? '';
-              int selectedTruckPrice = selectedTruckData['price'] ?? 0;
-              int selectedTruckWeightCapacity = selectedTruckData['weightCapacity'] ?? 0;
+              String selectedTruckPrice = order['selectedTruck']['price'].toString() ?? '';
+              String selectedTruckWeightCapacity = order['selectedTruck']['weightCapacity'].toString() ?? '';
+
 
               // Fetching name and phone number
               String customerName = order['customerName'] ?? ''; // Adjust field name if different in Firestore
@@ -55,11 +56,11 @@ class ConfirmedordersScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'customerName: $customerName',
+                        'Customer Name: $customerName',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 4),
-                      Text('customerphoneNumber: $customerphoneNumber'),
+                      Text('Customer Phone Number: $customerphoneNumber'),
                       SizedBox(height: 8),
                       Text('Goods Type: $selectedGoodsType'),
                       Text('Date: ${selectedDate.toLocal()}'),
@@ -72,8 +73,9 @@ class ConfirmedordersScreen extends StatelessWidget {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text('Truck Name: $selectedTruckName'),
-                      Text('Truck Price: $selectedTruckPrice'),
-                      Text('Truck Weight Capacity: $selectedTruckWeightCapacity'),
+                      Text('Truck Price: ${selectedTruckPrice.toString()}'),
+                      Text('Truck Weight Capacity: ${selectedTruckWeightCapacity.toString()}'),
+
 
                     ],
                   ),

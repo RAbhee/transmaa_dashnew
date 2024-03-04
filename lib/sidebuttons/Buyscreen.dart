@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-
 class BuyScreen extends StatefulWidget {
   @override
   _BuyScreenState createState() => _BuyScreenState();
@@ -39,6 +38,7 @@ class _BuyScreenState extends State<BuyScreen> {
 
     return imageUrls.join(", ");
   }
+
   Future<List<String>> uploadImagesToStorage() async {
     List<String> imageUrls = [];
     for (int i = 0; i < _images.length; i++) {
@@ -58,7 +58,6 @@ class _BuyScreenState extends State<BuyScreen> {
     return imageUrls;
   }
 
-
   void disableImageSelection(int index) {
     setState(() {
       _images[index] = Uint8List(0);
@@ -74,105 +73,176 @@ class _BuyScreenState extends State<BuyScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                child: Image.asset(
-                  'assets/images/logo.png',
-                  height: 150,
-                  width: 150,
-                ),
-              ),
-              SizedBox(height: 10,),
-              SizedBox(height: 10,),
-              if (showTextFields) ...[
-                TextFormField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Company',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+    return Stack(
+      children: [
+        // Background Image
+        Image.asset(
+          'assets/images/newbgg.jpg', // Provide the path to your background image
+          fit: BoxFit.cover,
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent, // Set the scaffold background to transparent
+          body: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    child: Image.asset(
+                      'assets/images/logo.png',
+                      height: 200,
+                      width: 250,
+                    ),
                   ),
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: vehicleModelController,
-                  decoration: InputDecoration(
-                    labelText: 'Model',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  ),
-                ),
-                SizedBox(height: 10),
-                TextFormField(
-                  controller: yearsOfVehicleController,
-                  decoration: InputDecoration(
-                    labelText: 'Year',
-                    border: OutlineInputBorder(),
-                    contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                  ),
-                ),
+                  SizedBox(height: 10,),
+                  SizedBox(height: 10,),
+                  if (showTextFields) ...[
+                    TextFormField(
+                      controller: nameController,
+                      decoration: InputDecoration(
+                        labelText: 'Company',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: vehicleModelController,
+                      decoration: InputDecoration(
+                        labelText: 'Model',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    TextFormField(
+                      controller: yearsOfVehicleController,
+                      decoration: InputDecoration(
+                        labelText: 'Year',
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      ),
+                    ),
 
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Padding(padding: EdgeInsets.only(left: 10)),
-                    Text('Upload Images', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black)),
+                    SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Padding(padding: EdgeInsets.only(left: 10)),
+                        Text('Upload Images', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black)),
+                      ],
+                    ),
+                    buildImagePick(),
                   ],
-                ),
-                buildImagePick(),
-              ],
-              SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () async {
-                  if (areFieldsValid()) {
-                    await saveUserDataToFirestore();
-                    setState(() {
-                      saveButtonColor = Colors.green;
-                    });
-                    for (int i = 0; i < _images.length; i++) {
-                      if (_images[i] != null) {
-                        disableImageSelection(i);
-                      }
-                    }
-                    // Optionally, you can show a confirmation message after successful save.
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Data saved successfully'),
-                      duration: Duration(seconds: 2),
-                    ));
-                  } else {
-                    setState(() {
-                      saveButtonColor = Colors.green;
-                    });
-                    // Show a snackbar or any other indication for invalid fields
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Please fill in all fields and upload the image.'),
-                      duration: Duration(seconds: 2),
-                    ));
-                  }
-                },
+                  SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (areFieldsValid()) {
+                        await saveUserDataToFirestore();
+                        setState(() {
+                          saveButtonColor = Colors.green;
+                        });
 
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-                    if (states.contains(MaterialState.disabled)) {
-                      return saveButtonColor.withOpacity(0.5);
-                    }
-                    return saveButtonColor;
-                  }),
-                ),
-                child: Text('Save Data',style: TextStyle(
-                  color: Colors.white
-                ),),
+                        // Reset text controllers
+                        nameController.clear();
+                        vehicleModelController.clear();
+                        yearsOfVehicleController.clear();
+
+                        // Clear image list
+                        setState(() {
+                          _images = List.filled(4, null);
+                        });
+
+                        // Optionally, you can show a confirmation message after successful save.
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Data saved successfully'),
+                          duration: Duration(seconds: 2),
+                        ));
+                      } else {
+                        setState(() {
+                          saveButtonColor = Colors.green;
+                        });
+                        // Show a snackbar or any other indication for invalid fields
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text('Please fill in all fields and upload the image.'),
+                          duration: Duration(seconds: 2),
+                        ));
+                      }
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+                        if (states.contains(MaterialState.disabled)) {
+                          return saveButtonColor.withOpacity(0.5);
+                        }
+                        return saveButtonColor;
+                      }),
+                    ),
+                    child: Text('Save Data',style: TextStyle(
+                        color: Colors.white
+                    ),),
+                  ),
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance.collection('Buycollection').snapshots(),
+                    builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return CircularProgressIndicator();
+                      }
+                      if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      return Column(
+                        children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                          Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+                          String imageURL = data['ImageURLs'][0]; // Assuming you store the image URL in an array
+                          return Card(
+                            margin: EdgeInsets.all(10),
+                            child: ListTile(
+                              leading: Image.network(imageURL), // Display the image as the leading widget
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Company: ${data['Company']}',
+                                    style: TextStyle(
+                                      fontSize: 16, // Adjust font size as needed
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Model: ${data['Vehicle Model']}',
+                                    style: TextStyle(
+                                      fontSize: 14, // Adjust font size as needed
+                                    ),
+                                  ),
+                                  Text(
+                                    'Year: ${data['Year']}',
+                                    style: TextStyle(
+                                      fontSize: 14, // Adjust font size as needed
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: IconButton(
+                                icon: Icon(Icons.delete),
+                                onPressed: () async {
+                                  await FirebaseFirestore.instance.collection('Buycollection').doc(document.id).delete();
+                                },
+                              ),
+                            ),
+
+
+                          );
+                        }).toList(),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+      ],
     );
   }
 
