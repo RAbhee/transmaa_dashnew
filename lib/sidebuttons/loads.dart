@@ -42,16 +42,17 @@ class _LoadsScreenState extends State<LoadsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.orange.shade100,
+                color: Colors.black.withOpacity(0.3),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: Colors.black.withOpacity(0.2),
                     blurRadius: 10.0,
                     offset: Offset(0, 4),
                   ),
@@ -67,6 +68,8 @@ class _LoadsScreenState extends State<LoadsScreen> {
                     children: [
                       Icon(
                         Icons.fire_truck_sharp,
+                        color: Colors.white,
+                        size: 20,
                       ),
                       SizedBox(width: 10),
                       Text(
@@ -74,11 +77,12 @@ class _LoadsScreenState extends State<LoadsScreen> {
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red.shade900,
+                          color: Colors.yellow,
                         ),
                       ),
                     ],
                   ),
+
                   Expanded(
                     child: PageView.builder(
                       controller: _pageController,
@@ -127,15 +131,15 @@ class _LoadsScreenState extends State<LoadsScreen> {
           Expanded(
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: Colors.black.withOpacity(0.3),
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
+                    color: Colors.black.withOpacity(0.2),
                     blurRadius: 10.0,
                     offset: Offset(0, 4),
                   ),
                 ],
-                borderRadius: BorderRadius.circular(20),
               ),
               padding: EdgeInsets.all(20),
               child: Column(
@@ -146,7 +150,7 @@ class _LoadsScreenState extends State<LoadsScreen> {
                     style: TextStyle(
                       fontSize: 30,
                       fontWeight: FontWeight.bold,
-                      color: Colors.red.shade900,
+                      color: Colors.white,
                     ),
                   ),
                   SizedBox(height: 10),
@@ -154,7 +158,7 @@ class _LoadsScreenState extends State<LoadsScreen> {
                     thickness: 3,
                     indent: 10,
                     endIndent: 10,
-                    color: Colors.red.shade900,
+                    color: Colors.yellowAccent,
                   ),
                   SizedBox(height: 15),
                   _buildButtonsColumn(context),
@@ -178,6 +182,7 @@ class _LoadsScreenState extends State<LoadsScreen> {
             Colors.green.shade900,
             "Delivered orders",
             '/delivered_orders',
+
           ),
           _buildButton(
             context,
@@ -227,7 +232,7 @@ class _LoadsScreenState extends State<LoadsScreen> {
 
   Widget _buildButtonRow(BuildContext context, List<Widget> buttons) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
       children: buttons.map((button) {
         return Expanded(
           child: button,
@@ -254,7 +259,7 @@ class _LoadsScreenState extends State<LoadsScreen> {
             ),
           ],
           border: Border.all(
-            color: Colors.black.withOpacity(0.3),
+            color: Colors.white.withOpacity(0.5),
             width: 4.0,
           ),
         ),

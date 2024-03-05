@@ -5,7 +5,10 @@ class InsuranceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.grey.withOpacity(0.5),
         title: Text('Insurance'),
       ),
       body: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(

@@ -97,7 +97,6 @@ class _BuyScreenState extends State<BuyScreen> {
                     ),
                   ),
                   SizedBox(height: 10,),
-                  SizedBox(height: 10,),
                   if (showTextFields) ...[
                     TextFormField(
                       controller: nameController,

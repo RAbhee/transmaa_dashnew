@@ -49,8 +49,9 @@ class Ordersontheway extends StatelessWidget {
                 Map<String, dynamic> selectedTruckData = order['selectedTruck'] ??
                     {};
                 String selectedTruckName = selectedTruckData['name'] ?? '';
-                int selectedTruckPrice = int.parse(selectedTruckData['price'] ?? '0');
-                int selectedTruckWeightCapacity = int.parse(selectedTruckData['weightCapacity'] ?? '0');
+                String selectedTruckPrice = selectedTruckData['price'].toString() ?? '0';
+                String selectedTruckWeightCapacity = selectedTruckData['weightCapacity'].toString() ?? '0';
+
 
 
                 // Fetching name and phone number
@@ -58,7 +59,7 @@ class Ordersontheway extends StatelessWidget {
                     ''; // Adjust field name if different in Firestore
                 String customerphoneNumber = order['customerphoneNumber'] ??
                     ''; // Adjust field name if different in Firestore
-                String status = order['status'] ??'';
+                String status = order['status'] ?? '';
                 String driverName = order['driverName'] ??
                     ''; // Adjust field name if different in Firestore
                 String driverPhoneNumber = order['driverPhoneNumber'] ??

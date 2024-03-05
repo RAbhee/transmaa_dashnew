@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'Buyscreen.dart';
 import 'Interested.dart';
 import 'Sellscreen.dart'; // Import your next screen file here
@@ -32,21 +31,20 @@ class _BuynSellScreenState extends State<BuynSellScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.transparent,
       appBar: AppBar(
         centerTitle: true,
         title: Text(
           'Buy & Sell',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
+          backgroundColor: Colors.grey.withOpacity(0.5)
       ),
       body: Stack(
         fit: StackFit.expand,
         children: [
           // Background Image
-          Image.asset(
-            'assets/images/newbgg.jpg',
-            fit: BoxFit.cover,
-          ),
+
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -76,7 +74,6 @@ class _BuynSellScreenState extends State<BuynSellScreen>
               context,
               MaterialPageRoute(builder: (context) => InterestedScreen()),
             );
-
           },
           child: Text('Interested',
             style: TextStyle(

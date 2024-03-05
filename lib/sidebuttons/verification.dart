@@ -7,7 +7,9 @@ class VerificationScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
+          backgroundColor: Colors.grey.withOpacity(0.5),
         title: Text('Verification'),
         actions: [
           IconButton(
@@ -43,7 +45,8 @@ class VerificationScreen extends StatelessWidget {
             .collection('Driver')
             .where('status', isEqualTo: 'Pending')
             .snapshots(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
@@ -51,17 +54,24 @@ class VerificationScreen extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           }
           if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
-            return Center(child: Text('No data available'));
+            return Center(
+                child: Text(
+              'No data available',
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+            ));
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
-              QueryDocumentSnapshot<Map<String, dynamic>> driverData = snapshot.data!.docs[index];
+              QueryDocumentSnapshot<Map<String, dynamic>> driverData =
+                  snapshot.data!.docs[index];
               Map<String, dynamic> driver = driverData.data();
               String imageUrl = driver['image'];
               String name = driver['name'];
               String status = driver['status'];
-              String phoneNumber = driver['phone_number']; // Assuming you have phone number in your data
+              String phoneNumber = driver[
+                  'phone_number']; // Assuming you have phone number in your data
 
               return Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
@@ -78,7 +88,9 @@ class VerificationScreen extends StatelessWidget {
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => ImageScreen(imageUrl)),
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ImageScreen(imageUrl)),
                               );
                             },
                             child: Image.network(
@@ -88,7 +100,9 @@ class VerificationScreen extends StatelessWidget {
                               fit: BoxFit.cover,
                             ),
                           ),
-                          SizedBox(width: 20,),
+                          SizedBox(
+                            width: 20,
+                          ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -104,7 +118,11 @@ class VerificationScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: status == 'verified' ? Colors.green : status == 'rejected' ? Colors.red : Colors.black,
+                                  color: status == 'verified'
+                                      ? Colors.green
+                                      : status == 'rejected'
+                                          ? Colors.red
+                                          : Colors.black,
                                 ),
                               ),
                               Text(
@@ -123,7 +141,10 @@ class VerificationScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: driver.entries.map((entry) {
-                          if (entry.key != 'image' && entry.key != 'name' && entry.key != 'status' && entry.key != 'phone_number') {
+                          if (entry.key != 'image' &&
+                              entry.key != 'name' &&
+                              entry.key != 'status' &&
+                              entry.key != 'phone_number') {
                             return Text(
                               '${entry.key}: ${entry.value}',
                               style: TextStyle(fontSize: 16),
@@ -139,8 +160,12 @@ class VerificationScreen extends StatelessWidget {
                         children: [
                           ElevatedButton(
                             onPressed: () {
-                              if (status.toLowerCase() == 'pending') { // corrected case here
-                                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'verified'});
+                              if (status.toLowerCase() == 'pending') {
+                                // corrected case here
+                                FirebaseFirestore.instance
+                                    .collection('Driver')
+                                    .doc(driverData.id)
+                                    .update({'status': 'verified'});
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -149,14 +174,19 @@ class VerificationScreen extends StatelessWidget {
                             ),
                             child: Text(
                               'Verify',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                           SizedBox(width: 10),
                           ElevatedButton(
                             onPressed: () {
-                              if (status.toLowerCase() == 'pending') { // corrected case here
-                                FirebaseFirestore.instance.collection('Driver').doc(driverData.id).update({'status': 'rejected'});
+                              if (status.toLowerCase() == 'pending') {
+                                // corrected case here
+                                FirebaseFirestore.instance
+                                    .collection('Driver')
+                                    .doc(driverData.id)
+                                    .update({'status': 'rejected'});
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -165,7 +195,8 @@ class VerificationScreen extends StatelessWidget {
                             ),
                             child: Text(
                               'Reject',
-                              style: TextStyle(fontSize: 16, color: Colors.white),
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ],

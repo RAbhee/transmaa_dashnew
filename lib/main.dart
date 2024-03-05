@@ -74,7 +74,12 @@ class _AdminDashboardState extends State<AdminDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Row(
+
+      body:Stack(
+        children: [
+          Positioned.fill(child:Image.asset("assets/images/backimage.jpg",
+          fit: BoxFit.cover,),),
+      Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Sidebar
@@ -114,7 +119,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 // Top container
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.orange.shade100,
+                    color: Colors.black.withOpacity(0.3),
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     boxShadow: [
                       BoxShadow(
@@ -133,8 +138,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Image.asset(
-                              'assets/images/logo.png',
-                              height: 80.0,
+                              'assets/images/whitelogo.png',
+                              height: 100.0,
                             ),
                           ],
                         ),
@@ -144,11 +149,13 @@ class _AdminDashboardState extends State<AdminDashboard> {
                           Icon(
                             Icons.notifications,
                             size: 30.0,
+                            color: Colors.white,
                           ),
                           SizedBox(width: 20.0),
                           Icon(
                             Icons.account_circle,
                             size: 30.0,
+                            color: Colors.white,
                           ),
                         ],
                       ),
@@ -177,6 +184,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
           SizedBox(width: 10),
         ],
       ),
+    ]
+      )
     );
   }
 }
@@ -202,7 +211,7 @@ class SideContainer extends StatelessWidget {
         child: Container(
           width: 220,
           decoration: BoxDecoration(
-            color: Colors.orange.shade100,
+            color: Colors.black.withOpacity(0.6),
             borderRadius: BorderRadius.circular(16.0),
           ),
           child: Column(
@@ -215,13 +224,13 @@ class SideContainer extends StatelessWidget {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30.0,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
               ),
               SizedBox(height: 15),
               Divider(
-                color: Colors.black,
+                color: Colors.yellowAccent,
                 thickness: 2,
                 indent: 10,
                 endIndent: 10,
@@ -249,7 +258,7 @@ class SideContainer extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        color: selectedItemIndex == index ? Colors.blue.withOpacity(0.3) : Colors.transparent,
+        color: selectedItemIndex == index ? Colors.white.withOpacity(0.2) : Colors.transparent,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
@@ -257,14 +266,14 @@ class SideContainer extends StatelessWidget {
               Icon(
                 icon,
                 size: 30,
-                color: selectedItemIndex == index ? Colors.blue : Colors.black,
+                color: selectedItemIndex == index ? Colors.white : Colors.white,
               ),
               SizedBox(width: 16),
               Text(
                 _getIconLabel(icon),
                 style: TextStyle(
                   fontSize: 16,
-                  color: selectedItemIndex == index ? Colors.blue : Colors.black,
+                  color: selectedItemIndex == index ? Colors.white : Colors.white,
                   fontWeight: selectedItemIndex == index ? FontWeight.bold : FontWeight.normal,
                 ),
               ),
