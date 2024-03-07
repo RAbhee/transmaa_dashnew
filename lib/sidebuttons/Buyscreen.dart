@@ -77,7 +77,7 @@ class _BuyScreenState extends State<BuyScreen> {
       children: [
         // Background Image
         Image.asset(
-          'assets/images/newbgg.jpg', // Provide the path to your background image
+          'assets/images/backimage.jpg', // Provide the path to your background image
           fit: BoxFit.cover,
           width: double.infinity,
           height: double.infinity,
@@ -92,8 +92,8 @@ class _BuyScreenState extends State<BuyScreen> {
                   Container(
                     child: Image.asset(
                       'assets/images/logo.png',
-                      height: 200,
-                      width: 250,
+                      height: 250,
+                      width: 300,
                     ),
                   ),
                   SizedBox(height: 10,),
@@ -102,6 +102,7 @@ class _BuyScreenState extends State<BuyScreen> {
                       controller: nameController,
                       decoration: InputDecoration(
                         labelText: 'Company',
+                        labelStyle: TextStyle(color: Colors.white),
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       ),
@@ -110,7 +111,7 @@ class _BuyScreenState extends State<BuyScreen> {
                     TextFormField(
                       controller: vehicleModelController,
                       decoration: InputDecoration(
-                        labelText: 'Model',
+                        labelText: 'Model',labelStyle: TextStyle(color: Colors.white),
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       ),
@@ -120,6 +121,7 @@ class _BuyScreenState extends State<BuyScreen> {
                       controller: yearsOfVehicleController,
                       decoration: InputDecoration(
                         labelText: 'Year',
+                        labelStyle: TextStyle(color: Colors.white),
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       ),

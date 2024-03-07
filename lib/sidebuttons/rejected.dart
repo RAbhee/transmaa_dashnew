@@ -35,7 +35,7 @@ class Rejectedscreens extends StatelessWidget {
               String status = driver['status'];
               String phoneNumber = driver['phone_number']; // Assuming you have phone number in your data
 
-              return Card(
+              return Card(color: Colors.black.withOpacity(0.5),
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 elevation: 5,
                 child: Padding(
@@ -68,7 +68,6 @@ class Rejectedscreens extends StatelessWidget {
                                 'Name: $name',
                                 style: TextStyle(
                                   fontSize: 16,
-                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                               Text(

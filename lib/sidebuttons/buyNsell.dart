@@ -33,12 +33,16 @@ class _BuynSellScreenState extends State<BuynSellScreen>
     return Scaffold(
         backgroundColor: Colors.transparent,
       appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+          ),
         centerTitle: true,
         title: Text(
           'Buy & Sell',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(color: Colors.white),
         ),
-          backgroundColor: Colors.grey.withOpacity(0.5)
+
+          backgroundColor: Colors.black.withOpacity(0.5)
       ),
       body: Stack(
         fit: StackFit.expand,

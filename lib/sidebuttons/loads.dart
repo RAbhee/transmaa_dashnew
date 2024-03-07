@@ -182,8 +182,8 @@ class _LoadsScreenState extends State<LoadsScreen> {
             Colors.green.shade900,
             "Delivered orders",
             '/delivered_orders',
-
           ),
+
           _buildButton(
             context,
             Icons.access_time,

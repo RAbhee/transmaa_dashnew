@@ -23,15 +23,10 @@ class _CancelledOrdersScreenState extends State<CancelledOrdersScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: true,
-        title: Text('Cancelled Orders'),
-      ),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/newbgg.jpg"), // Provide your image path here
+            image: AssetImage("assets/images/backimage.jpg"), // Provide your image path here
             fit: BoxFit.cover,
           ),
         ),
@@ -59,29 +54,46 @@ class _CancelledOrdersScreenState extends State<CancelledOrdersScreen> {
               };
             }).toList();
 
-            return ListView.builder(
-              itemCount: (cancelledOrders.length / 3).ceil(),
-              itemBuilder: (context, index) {
-                final startIndex = index * 3;
-                final endIndex = startIndex + 3 <= cancelledOrders.length ? startIndex + 3 : cancelledOrders.length;
-                final ordersInRow = cancelledOrders.sublist(startIndex, endIndex);
+            return
+              Column(
+                children: [
+                  Text(
+                    'Cancelled Orders',
+                    style: TextStyle(
+                        fontStyle: FontStyle.normal,
+                        fontSize: 30,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500
+                    ),
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                    itemCount: (cancelledOrders.length / 3).ceil(),
+                    itemBuilder: (context, index) {
+                      final startIndex = index * 3;
+                      final endIndex = startIndex + 3 <= cancelledOrders.length ? startIndex + 3 : cancelledOrders.length;
+                      final ordersInRow = cancelledOrders.sublist(startIndex, endIndex);
 
-                return Row(
-                  children: ordersInRow.map((order) {
-                    return Expanded(
-                      child: MagicCard(
-                        name: order['name'] ?? '',
-                        phoneNumber: order['phoneNumber'] ?? '',
-                        selectedGoodsType: order['selectedGoodsType'] ?? '',
-                        selectedDate: order['selectedDate'] ?? DateTime.now(),
-                        selectedTime: order['selectedTime'] ?? '',
-                        selectedTruck: order['selectedTruck'] ?? {},
-                      ),
-                    );
-                  }).toList(),
-                );
-              },
-            );
+                      return Row(
+                        children:
+                        ordersInRow.map((order) {
+                          return Expanded(
+                            child: MagicCard(
+                              name: order['name'] ?? '',
+                              phoneNumber: order['phoneNumber'] ?? '',
+                              selectedGoodsType: order['selectedGoodsType'] ?? '',
+                              selectedDate: order['selectedDate'] ?? DateTime.now(),
+                              selectedTime: order['selectedTime'] ?? '',
+                              selectedTruck: order['selectedTruck'] ?? {},
+                            ),
+                          );
+                        }).toList(),
+                      );
+                    },
+                                ),
+                  ),
+                ],
+              );
           },
         ),
       ),
@@ -112,36 +124,29 @@ class MagicCard extends StatelessWidget {
       margin: EdgeInsets.all(10),
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.black),
+        border: Border.all(color: Colors.white),
         borderRadius: BorderRadius.circular(10),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFFE3E2E2),
-            Color(0xFAFFF9EE),
-            Color(0xFFDEDDDD),
+            Color(0xFF0C0000).withOpacity(0.7),
+            Color(0xFA0E0E0E).withOpacity(0.7),
+            Color(0xFF090000).withOpacity(0.7),
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.5),
-            blurRadius: 10,
-            offset: Offset(0, 3),
-          ),
-        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Name: $name', style: TextStyle(color: Colors.black87)),
-          Text('Phone Number: $phoneNumber', style: TextStyle(color: Colors.blue.shade900)),
-          Text('Goods Type: $selectedGoodsType', style: TextStyle(color: Colors.black87)),
-          Text('Date: ${selectedDate.toLocal()}', style: TextStyle(color: Colors.blue.shade900)),
-          Text('Time: $selectedTime', style: TextStyle(color: Colors.black87)),
-          Text('Truck Name: ${selectedTruck['name']}', style: TextStyle(color: Colors.blue.shade900)),
-          Text('Truck Price: ${selectedTruck['price']}', style: TextStyle(color: Colors.black87)),
-          Text('Truck Weight Capacity: ${selectedTruck['weightCapacity']}', style: TextStyle(color: Colors.blue.shade900)),
+          Text('Name: $name', style: TextStyle(color: Colors.yellowAccent)),
+          Text('Phone Number: $phoneNumber', style: TextStyle(color: Colors.yellowAccent)),
+          Text('Goods Type: $selectedGoodsType', style: TextStyle(color: Colors.white)),
+          Text('Date: ${selectedDate.toLocal()}', style: TextStyle(color: Colors.white)),
+          Text('Time: $selectedTime', style: TextStyle(color: Colors.white)),
+          Text('Truck Name: ${selectedTruck['name']}', style: TextStyle(color: Colors.white)),
+          Text('Truck Price: ${selectedTruck['price']}', style: TextStyle(color: Colors.white)),
+          Text('Truck Weight Capacity: ${selectedTruck['weightCapacity']}', style: TextStyle(color: Colors.white)),
         ],
       ),
     );

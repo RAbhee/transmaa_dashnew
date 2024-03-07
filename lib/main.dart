@@ -258,7 +258,7 @@ class SideContainer extends StatelessWidget {
       },
       child: Container(
         width: double.infinity,
-        color: selectedItemIndex == index ? Colors.white.withOpacity(0.2) : Colors.transparent,
+
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Row(
@@ -266,14 +266,14 @@ class SideContainer extends StatelessWidget {
               Icon(
                 icon,
                 size: 30,
-                color: selectedItemIndex == index ? Colors.white : Colors.white,
+                color: selectedItemIndex == index ? Colors.yellowAccent : Colors.white,
               ),
               SizedBox(width: 16),
               Text(
                 _getIconLabel(icon),
                 style: TextStyle(
                   fontSize: 16,
-                  color: selectedItemIndex == index ? Colors.white : Colors.white,
+                  color: selectedItemIndex == index ? Colors.yellowAccent : Colors.white,
                   fontWeight: selectedItemIndex == index ? FontWeight.bold : FontWeight.normal,
                 ),
               ),

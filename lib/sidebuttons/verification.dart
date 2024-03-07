@@ -9,33 +9,43 @@ class VerificationScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
-          backgroundColor: Colors.grey.withOpacity(0.5),
-        title: Text('Verification'),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(20)),
+        ),
+          backgroundColor: Colors.black.withOpacity(0.5),
+        title: Text('Verification',style: TextStyle(color: Colors.white,
+        fontWeight: FontWeight.w600
+        ),),
+        centerTitle: true,
         actions: [
-          IconButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Verifiedscreens()),
               );
             },
-            icon: Icon(
-              Icons.check,
-              color: Colors.green,
-              size: 35,
+            child: Text("Verified",style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w700
+            ),) ,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green.withOpacity(0.5)
             ),
           ),
-          IconButton(
+          ElevatedButton(
             onPressed: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => Rejectedscreens()),
               );
             },
-            icon: Icon(
-              Icons.close,
-              color: Colors.red,
-              size: 35,
+            child: Text("Rejected",style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w700
+            ),) ,
+            style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red.withOpacity(0.5)
             ),
           ),
         ],
