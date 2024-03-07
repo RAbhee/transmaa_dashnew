@@ -46,11 +46,11 @@ class Interestedfinance extends StatelessWidget {
                       return Row(
                         children: [
                           Expanded(
-                            child: _buildCard(snapshot.data!.docs[firstIndex]),
+                            child: CardWidget(document: snapshot.data!.docs[firstIndex]),
                           ),
                           SizedBox(width: 10), // Adjust the spacing between cards
                           Expanded(
-                            child: secondIndex < snapshot.data!.docs.length ? _buildCard(snapshot.data!.docs[secondIndex]) : Container(),
+                            child: secondIndex < snapshot.data!.docs.length ? CardWidget(document: snapshot.data!.docs[secondIndex]) : Container(),
                           ),
                         ],
                       );
@@ -64,54 +64,94 @@ class Interestedfinance extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildCard(QueryDocumentSnapshot<Map<String, dynamic>> document) {
-    Map<String, dynamic> driver = document.data();
-    String name = driver['name'];
-    String status = driver['status'];
-    String phoneNumber = driver['phoneNumber'] ?? ''; // Use empty string if null
-    String rcNumber = driver['rcNumber'] ?? ''; // Use empty string if null
-    String vehicleType = driver['vehicleType'] ?? ''; // Use empty string if null
+class CardWidget extends StatefulWidget {
+  final QueryDocumentSnapshot<Map<String, dynamic>> document;
 
-    return Card(
-      color: Colors.black.withOpacity(0.5),
-      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-      elevation: 5,
-      child: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Name: $name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.yellowAccent)),
-            Text('Status: $status', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-            Text('Phone: $phoneNumber', style: TextStyle(fontSize: 16, color: Colors.white)),
-            Text('RC Number: $rcNumber', style: TextStyle(fontSize: 16, color: Colors.white)),
-            Text('Vehicle Type: $vehicleType', style: TextStyle(fontSize: 16, color: Colors.white)),
-            SizedBox(height: 8),
-            Divider(color: Colors.blue),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Handle button press
-                  },
-                  child: Text('Attended',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15
+  const CardWidget({Key? key, required this.document}) : super(key: key);
 
-                  ),),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightBlueAccent.withOpacity(0.4)
+  @override
+  _CardWidgetState createState() => _CardWidgetState();
+}
+
+class _CardWidgetState extends State<CardWidget> {
+  bool isHovering = false;
+
+  @override
+  Widget build(BuildContext context) {
+    Map<String, dynamic> Finance = widget.document.data();
+    String name = Finance['name'];
+    String status = Finance['status'];
+    String phoneNumber = Finance['phoneNumber'] ?? ''; // Use empty string if null
+    String rcNumber = Finance['rcNumber'] ?? ''; // Use empty string if null
+    String vehicleType = Finance['vehicleType'] ?? ''; // Use empty string if null
+
+    return MouseRegion(
+      onEnter: (_) => setState(() => isHovering = true),
+      onExit: (_) => setState(() => isHovering = false),
+      child: Card(
+        color: isHovering ? Colors.black.withOpacity(0.6) : Colors.black.withOpacity(0.01), // Change color on hover
+        margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+        elevation: isHovering ? 10 : 5, // Change elevation on hover
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Name: $name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.yellowAccent)),
+              Text('Status: $status', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text('Phone: $phoneNumber', style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text('RC Number: $rcNumber', style: TextStyle(fontSize: 16, color: Colors.white)),
+              Text('Vehicle Type: $vehicleType', style: TextStyle(fontSize: 16, color: Colors.white)),
+              SizedBox(height: 8),
+              Divider(color: Colors.blue),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Handle button press
+                    },
+                    child: Text('Attended',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 15
+
+                      ),),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.lightBlueAccent.withOpacity(0.4)
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+class SlidePageRoute extends PageRouteBuilder {
+  final Widget page;
+
+  SlidePageRoute({required this.page})
+      : super(
+    pageBuilder: (context, animation, secondaryAnimation) => page,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(10.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+      var tween =
+      Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+      var offsetAnimation = animation.drive(tween);
+
+      return SlideTransition(
+        position: offsetAnimation,
+        child: child,
+      );
+    },
+  );
 }

@@ -108,19 +108,20 @@ class _LoadsScreenState extends State<LoadsScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(
                       3,
-                          (index) => AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        width: _currentIndex == index ? 25.0 : 15.0,
-                        height: 6.0,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(5),
-                          color: _currentIndex == index
-                              ? Colors.orange.shade500
-                              : Colors.grey,
-                        ),
-                      ),
+                          (index) =>
+                          AnimatedContainer(
+                            duration: Duration(milliseconds: 300),
+                            margin: EdgeInsets.symmetric(horizontal: 5.0),
+                            width: _currentIndex == index ? 25.0 : 15.0,
+                            height: 6.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(5),
+                              color: _currentIndex == index
+                                  ? Colors.orange.shade500
+                                  : Colors.grey,
+                            ),
+                          ),
                     ),
                   ),
                 ],
@@ -183,7 +184,6 @@ class _LoadsScreenState extends State<LoadsScreen> {
             "Delivered orders",
             '/delivered_orders',
           ),
-
           _buildButton(
             context,
             Icons.access_time,
