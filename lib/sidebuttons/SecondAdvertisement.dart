@@ -69,8 +69,8 @@ class _SecondAdvertisementState extends State<SecondAdvertisement> {
               InkWell(
                 onTap: _pickImage,
                 child: Container(
+                  width: 200, // Adjust the width as needed
                   height: 200,
-                  width: 50,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.blue),
                     borderRadius: BorderRadius.circular(12.0),
@@ -83,7 +83,7 @@ class _SecondAdvertisementState extends State<SecondAdvertisement> {
                       : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.image, size: 40),
+                      Icon(Icons.image, size: 50),
                       SizedBox(height: 8),
                       Text('Upload Image', style: TextStyle(fontSize: 16)),
                     ],
