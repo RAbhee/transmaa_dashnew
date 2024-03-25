@@ -208,7 +208,6 @@ class _InsuranceScreenState extends State<InsuranceScreen> with SingleTickerProv
                           size: 30,
                         ),
                       ),
-                      SizedBox(width: 10,),
                       IconButton(
                         onPressed: () {
                           _updateStatus(documentId, 'Not Interested');

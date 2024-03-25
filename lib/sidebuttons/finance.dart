@@ -209,7 +209,6 @@ class _FinanceScreenState extends State<FinanceScreen> with SingleTickerProvider
                           size: 30,
                         ),
                       ),
-                      SizedBox(width: 10,),
                       IconButton(
                         onPressed: () {
                           _updateStatus(documentId, 'Not Interested');

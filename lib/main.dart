@@ -1,5 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:transmaa_dash/sidebuttons/FirstAdvertisement.dart';
+import 'package:transmaa_dash/sidebuttons/Advertisemnt.dart';
 import 'package:transmaa_dash/sidebuttons/buyNsell.dart';
 import 'package:transmaa_dash/sidebuttons/finance.dart';
 import 'package:transmaa_dash/sidebuttons/insurance.dart';
@@ -63,6 +65,7 @@ class _AdminDashboardState extends State<AdminDashboard> {
     FinanceScreen(),
     InsuranceScreen(),
     VerificationScreen(),
+    Advertisement(),
   ];
 
   @override
@@ -98,7 +101,8 @@ class _AdminDashboardState extends State<AdminDashboard> {
                 Icons.shopping_cart, // Buy & Sell
                 Icons.account_balance_wallet, // Finance
                 Icons.local_offer, // Insurance
-                Icons.verified_user, // Verification
+                Icons.verified_user,// Verification
+                Icons.post_add,// Verification
               ],
               // Pass the method to update the page content
               onPageContentRequested: (Widget pageContent) {
@@ -296,6 +300,8 @@ class SideContainer extends StatelessWidget {
         return InsuranceScreen();
       case Icons.verified_user:
         return VerificationScreen();
+      case Icons.post_add:
+        return Advertisement();
       default:
         return Container();
     }
@@ -312,6 +318,9 @@ class SideContainer extends StatelessWidget {
       return 'Insurance';
     } else if (icon == Icons.verified_user) {
       return 'Verification';
+    }
+    else if (icon == Icons.post_add) {
+      return 'Advertisement';
     }
     return '';
   }

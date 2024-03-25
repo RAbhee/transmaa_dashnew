@@ -30,7 +30,7 @@ class SellingScreen extends StatelessWidget {
               return Column(
                 children: [
                   Text(
-                    "Order's Waiting",
+                    "Seller",
                     style: TextStyle(
                         fontStyle: FontStyle.normal,
                         fontSize: 30,

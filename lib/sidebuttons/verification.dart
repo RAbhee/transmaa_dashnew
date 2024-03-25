@@ -12,9 +12,9 @@ class VerificationScreen extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.all(Radius.circular(20)),
         ),
-          backgroundColor: Colors.black.withOpacity(0.5),
+        backgroundColor: Colors.black.withOpacity(0.5),
         title: Text('Verification',style: TextStyle(color: Colors.white,
-        fontWeight: FontWeight.w600
+            fontWeight: FontWeight.w600
         ),),
         centerTitle: true,
         actions: [
@@ -26,13 +26,14 @@ class VerificationScreen extends StatelessWidget {
               );
             },
             child: Text("Verified",style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w700
+                color: Colors.white,
+                fontWeight: FontWeight.w700
             ),) ,
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.withOpacity(0.5)
+              backgroundColor: Colors.green,
             ),
           ),
+          SizedBox(width: 10),
           ElevatedButton(
             onPressed: () {
               Navigator.push(
@@ -45,15 +46,16 @@ class VerificationScreen extends StatelessWidget {
                 fontWeight: FontWeight.w700
             ),) ,
             style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.withOpacity(0.5)
+                backgroundColor: Colors.red
             ),
           ),
+          SizedBox(width: 10),
         ],
       ),
       body: StreamBuilder(
         stream: FirebaseFirestore.instance
             .collection('Driver')
-            .where('status', isEqualTo: 'Pending')
+            .where('status', isEqualTo: 'pending')
             .snapshots(),
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
@@ -66,24 +68,25 @@ class VerificationScreen extends StatelessWidget {
           if (snapshot.data == null || snapshot.data!.docs.isEmpty) {
             return Center(
                 child: Text(
-              'No data available',
-              style:
+                  'No data available',
+                  style:
                   TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-            ));
+                ));
           }
           return ListView.builder(
             itemCount: snapshot.data!.docs.length,
             itemBuilder: (context, index) {
               QueryDocumentSnapshot<Map<String, dynamic>> driverData =
-                  snapshot.data!.docs[index];
+              snapshot.data!.docs[index];
               Map<String, dynamic> driver = driverData.data();
               String imageUrl = driver['image'];
               String name = driver['name'];
               String status = driver['status'];
               String phoneNumber = driver[
-                  'phone_number']; // Assuming you have phone number in your data
+              'phone_number']; // Assuming you have phone number in your data
 
               return Card(
+                color: Colors.black.withOpacity(0.6),
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 elevation: 5,
                 child: Padding(
@@ -119,8 +122,9 @@ class VerificationScreen extends StatelessWidget {
                               Text(
                                 'Name: $name',
                                 style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.yellowAccent
                                 ),
                               ),
                               Text(
@@ -128,17 +132,18 @@ class VerificationScreen extends StatelessWidget {
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
-                                  color: status == 'verified'
+                                  color: status == 'Verified'
                                       ? Colors.green
-                                      : status == 'rejected'
-                                          ? Colors.red
-                                          : Colors.black,
+                                      : status == 'Rejected'
+                                      ? Colors.red
+                                      : Colors.white,
                                 ),
                               ),
                               Text(
                                 'Phone: $phoneNumber',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                    fontSize: 16,
+                                    color: Colors.white
                                 ),
                               ),
                             ],
@@ -157,7 +162,7 @@ class VerificationScreen extends StatelessWidget {
                               entry.key != 'phone_number') {
                             return Text(
                               '${entry.key}: ${entry.value}',
-                              style: TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16,color: Colors.white),
                             );
                           } else {
                             return SizedBox.shrink();
@@ -175,17 +180,17 @@ class VerificationScreen extends StatelessWidget {
                                 FirebaseFirestore.instance
                                     .collection('Driver')
                                     .doc(driverData.id)
-                                    .update({'status': 'verified'});
+                                    .update({'status': 'Verified'});
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.green,
+                              backgroundColor: Colors.green,
                               padding: EdgeInsets.all(10),
                             ),
                             child: Text(
                               'Verify',
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                              TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                           SizedBox(width: 10),
@@ -196,17 +201,17 @@ class VerificationScreen extends StatelessWidget {
                                 FirebaseFirestore.instance
                                     .collection('Driver')
                                     .doc(driverData.id)
-                                    .update({'status': 'rejected'});
+                                    .update({'status': 'Rejected'});
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
+                              backgroundColor: Colors.red,
                               padding: EdgeInsets.all(10),
                             ),
                             child: Text(
                               'Reject',
                               style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
+                              TextStyle(fontSize: 16, color: Colors.white),
                             ),
                           ),
                         ],

@@ -4,6 +4,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:transmaa_dash/sidebuttons/verification.dart'; // Assuming ImageScreen is defined here
 
 class InterestedInsurance extends StatelessWidget {
+  Future<void> moveToCompletedCollection(String documentId) async {
+    // Get the document reference from the original collection
+    DocumentReference<Map<String, dynamic>> originalDocRef =
+    FirebaseFirestore.instance.collection('Insurance').doc(documentId);
+
+    // Get the document snapshot
+    DocumentSnapshot<Map<String, dynamic>> docSnapshot =
+    await originalDocRef.get();
+
+    // Check if the document exists
+    if (docSnapshot.exists) {
+      // Get the data from the original document
+      Map<String, dynamic> data = docSnapshot.data()!;
+
+      // Add the document to the 'Completed' collection
+      await FirebaseFirestore.instance
+          .collection('CompletedInsurance')
+          .doc(documentId)
+          .set(data);
+
+      // Delete the document from the original collection
+      await originalDocRef.delete();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +44,8 @@ class InterestedInsurance extends StatelessWidget {
               .collection('Insurance')
               .where('status', isEqualTo: 'Interested')
               .snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(child: CircularProgressIndicator());
             }
@@ -32,10 +58,11 @@ class InterestedInsurance extends StatelessWidget {
             return Column(
               children: [
                 Text(
-                  "Interested Detail's",style: TextStyle(
-                    color: Colors.white,fontWeight: FontWeight.w500,
-                    fontSize: 25
-                ),
+                  "Interested Detail's",
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 25),
                 ),
                 Expanded(
                   child: ListView.builder(
@@ -46,11 +73,28 @@ class InterestedInsurance extends StatelessWidget {
                       return Row(
                         children: [
                           Expanded(
-                            child: _buildCard(snapshot.data!.docs[firstIndex]),
+                            child: _buildCard(
+                                snapshot.data!.docs[firstIndex],
+                                onPressed: () {
+                                  // Call the method to move document to 'Completed' collection
+                                  moveToCompletedCollection(
+                                      snapshot.data!.docs[firstIndex].id);
+                                }),
                           ),
-                          SizedBox(width: 10), // Adjust the spacing between cards
+                          SizedBox(
+                              width:
+                              10), // Adjust the spacing between cards
                           Expanded(
-                            child: secondIndex < snapshot.data!.docs.length ? _buildCard(snapshot.data!.docs[secondIndex]) : Container(),
+                            child: secondIndex < snapshot.data!.docs.length
+                                ? _buildCard(
+                              snapshot.data!.docs[secondIndex],
+                              onPressed: () {
+                                // Call the method to move document to 'Completed' collection
+                                moveToCompletedCollection(
+                                    snapshot.data!.docs[secondIndex].id);
+                              },
+                            )
+                                : Container(),
                           ),
                         ],
                       );
@@ -65,7 +109,8 @@ class InterestedInsurance extends StatelessWidget {
     );
   }
 
-  Widget _buildCard(QueryDocumentSnapshot<Map<String, dynamic>> document) {
+  Widget _buildCard(QueryDocumentSnapshot<Map<String, dynamic>> document,
+      {required VoidCallback onPressed}) {
     Map<String, dynamic> driver = document.data();
     String name = driver['name'];
     String status = driver['status'];
@@ -82,11 +127,22 @@ class InterestedInsurance extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Name: $name', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.yellowAccent)),
-            Text('Status: $status', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
-            Text('Phone: $phoneNumber', style: TextStyle(fontSize: 16, color: Colors.white)),
-            Text('RC Number: $rcNumber', style: TextStyle(fontSize: 16, color: Colors.white)),
-            Text('Vehicle Type: $vehicleType', style: TextStyle(fontSize: 16, color: Colors.white)),
+            Text('Name: $name',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellowAccent)),
+            Text('Status: $status',
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white)),
+            Text('Phone: $phoneNumber',
+                style: TextStyle(fontSize: 16, color: Colors.white)),
+            Text('RC Number: $rcNumber',
+                style: TextStyle(fontSize: 16, color: Colors.white)),
+            Text('Vehicle Type: $vehicleType',
+                style: TextStyle(fontSize: 16, color: Colors.white)),
             SizedBox(height: 8),
             Divider(color: Colors.blue),
             Row(
@@ -100,12 +156,11 @@ class InterestedInsurance extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w600,
-                        fontSize: 15
-
-                    ),),
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.lightBlueAccent.withOpacity(0.4)
+                        fontSize: 15),
                   ),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor:
+                      Colors.lightBlueAccent.withOpacity(0.4)),
                 ),
               ],
             ),
@@ -113,5 +168,14 @@ class InterestedInsurance extends StatelessWidget {
         ),
       ),
     );
+  }
+  void _updateStatus(String documentId, String status) {
+    FirebaseFirestore.instance.collection('Insurance').doc(documentId).update({
+      'status': status,
+    }).then((value) {
+      // Successfully updated
+    }).catchError((error) {
+      // Handle error
+    });
   }
 }

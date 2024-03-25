@@ -42,7 +42,7 @@ class DriversAcceptedOrders extends StatelessWidget {
         ),
         child: StreamBuilder(
           stream: FirebaseFirestore.instance.collection('DriversAcceptedOrders')
-              .where('status', isEqualTo: "Pending")
+              .where('status', isEqualTo: "Accepted")
               .snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
