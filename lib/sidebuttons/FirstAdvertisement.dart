@@ -16,7 +16,8 @@ class _FirstAdvertisementState extends State<FirstAdvertisement> {
   Color saveButtonColor = Colors.transparent;
 
   Future<void> _pickImage(int index) async {
-    final pickedImage = await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedImage =
+    await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedImage != null) {
       final imageBytes = await pickedImage.readAsBytes();
       setState(() {
@@ -26,10 +27,14 @@ class _FirstAdvertisementState extends State<FirstAdvertisement> {
   }
 
   Future<void> _uploadImagesToFirestore() async {
-    final CollectionReference users = FirebaseFirestore.instance.collection('Advertisement');
+    final CollectionReference users =
+    FirebaseFirestore.instance.collection('Advertisement');
     for (int i = 0; i < _images.length; i++) {
       if (_images[i] != null) {
-        final Reference storageRef = FirebaseStorage.instance.ref().child('images').child('image_${DateTime.now().millisecondsSinceEpoch}_$i.png');
+        final Reference storageRef = FirebaseStorage.instance
+            .ref()
+            .child('images')
+            .child('image_${DateTime.now().millisecondsSinceEpoch}_$i.png');
         await storageRef.putData(_images[i]!);
         String downloadURL = await storageRef.getDownloadURL();
         _imageUrls[i] = downloadURL;
@@ -40,8 +45,27 @@ class _FirstAdvertisementState extends State<FirstAdvertisement> {
     }
   }
 
+  Future<void> _fetchImagesFromFirestore() async {
+    final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await FirebaseFirestore.instance.collection('Advertisement').get();
+
+    final List<String?> fetchedImageUrls = querySnapshot.docs
+        .map<String?>((doc) => doc.data()['ImageURL'] as String?)
+        .toList();
+
+    setState(() {
+      _imageUrls = fetchedImageUrls;
+    });
+  }
+
   bool areFieldsValid() {
     return _images.any((image) => image != null);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchImagesFromFirestore();
   }
 
   @override
@@ -94,7 +118,8 @@ class _FirstAdvertisementState extends State<FirstAdvertisement> {
                           children: [
                             Icon(Icons.image, size: 40),
                             SizedBox(height: 8),
-                            Text('Upload Image ${i + 1}', style: TextStyle(fontSize: 16)),
+                            Text('Upload Image ${i + 1}',
+                                style: TextStyle(fontSize: 16)),
                           ],
                         ),
                       ),
@@ -116,7 +141,8 @@ class _FirstAdvertisementState extends State<FirstAdvertisement> {
                     ));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Please Select at least one image to upload.'),
+                      content: Text(
+                          'Please Select at least one image to upload.'),
                       duration: Duration(seconds: 2),
                     ));
                   }
@@ -132,8 +158,63 @@ class _FirstAdvertisementState extends State<FirstAdvertisement> {
                   ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                  child: Text('Save Data', style: TextStyle(fontSize: 18,color: Colors.white)),
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                  child:
+                  Text('Save Data', style: TextStyle(fontSize: 18, color: Colors.white)),
+                ),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: Center(
+                  child: _imageUrls.isNotEmpty
+                      ? GridView.builder(
+                    gridDelegate:
+                    SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 5,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 15,
+                    ),
+                    itemCount: _imageUrls.length,
+                    itemBuilder: (context, index) {
+                      return Stack(
+                        children: [
+                          Image.network(
+                            _imageUrls[index]!,
+                            height: 200,
+                            width: 200,
+                            fit: BoxFit.cover,
+                          ),
+                          Positioned(
+                            child: IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () async {
+                                // Delete image from Firestore
+                                if (_imageUrls[index] != null) {
+                                  await FirebaseFirestore.instance
+                                      .collection('Advertisement')
+                                      .where('ImageURL',
+                                      isEqualTo: _imageUrls[index])
+                                      .get()
+                                      .then((QuerySnapshot querySnapshot) {
+                                    querySnapshot.docs.forEach((doc) {
+                                      doc.reference.delete();
+                                    });
+                                  });
+                                }
+
+                                // Delete image from UI
+                                setState(() {
+                                  _imageUrls[index] = null;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  )
+                      : Text('No images fetched'),
                 ),
               ),
             ],

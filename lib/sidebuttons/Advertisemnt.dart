@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'Buyscreen.dart';
 import 'FirstAdvertisement.dart';
 import 'Interested.dart';
-import 'SecondAdvertisement.dart';
+import 'Dsicountimage.dart';
 import 'Sellscreen.dart';
 import 'ThirdAdvertisement.dart'; // Import your next screen file here
 
