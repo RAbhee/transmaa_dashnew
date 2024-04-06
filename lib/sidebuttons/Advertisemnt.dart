@@ -41,7 +41,7 @@ class _AdvertisementState extends State<Advertisement>
             ),
             centerTitle: true,
             title: Text(
-              'Advertisement',
+              "Advertisement",
               style: TextStyle(color: Colors.white),
             ),
 
